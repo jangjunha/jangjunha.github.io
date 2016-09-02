@@ -1,0 +1,105 @@
+@import url(//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSans-kr.css);
+@import url(http://fonts.googleapis.com/earlyaccess/notosanskr.css);
+
+$content-width: 768px;
+$page-margin: 96px;
+$ribbon-size: 180px;
+$ribbon-height: 48px;
+$ribbon-out: 24px;
+
+body {
+	/*background: #B0C5C2;*/
+	// background: #A0B5B2;
+	background: #99bdb8;
+	// font-family: 'Spoqa Han Sans', 'Sans-serif';
+	font-family: 'Noto Sans KR', sans-serif;
+}
+
+h1 {
+	font-size: 3.6rem;
+}
+
+.page {
+	width: $content-width;
+	background: #fff;
+	margin: 5rem auto;
+	padding: 48px $page-margin;
+	/*border-radius: 2px;*/
+	box-shadow: 0 0px 24px rgba(110,110,110,0.2);
+	/*border: 6px solid #90A5A2;*/
+}
+
+.main-footer {
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	right: 0;
+}
+
+.main-footer > .nav-wrap {
+	float: left;
+	width: 100%;
+	background: #383843;
+	color: white;
+	margin: 0;
+}
+
+.main-footer nav {
+	margin: 0 24px;
+}
+
+.shadow {
+	width: $content-width + ($page-margin * 2);
+	margin: 0 auto;
+	/*box-shadow: 0 8px 16px 8px rgba(0,0,0,0.75);*/
+	/*box-shadow: 0 16px 32px 16px rgba(0,0,0,0.75);*/
+	box-shadow: 0 32px 32px 32px rgba(0,0,0,0.75);
+	/*box-shadow: 0 32px 32px 32px rgba(0,0,0,1);*/
+	/*box-shadow: 0 28px 36px 32px rgba(0,0,0,0.75);*/
+}
+
+.main-footer nav * {
+	margin: 8px 0;
+	font-weight: 100;
+}
+
+.ribbon-box {
+	position: relative;
+	float: right;
+	right: -($page-margin + $ribbon-out);
+	width: $ribbon-size + $ribbon-out;
+	height: $ribbon-height;
+	background: #ffdf2d;
+	// border: 1px solid red;
+}
+
+.ribbon-box:after {
+	content: " ";
+	position: absolute;
+	width: $ribbon-out;
+	height: 100%;
+	bottom: -($ribbon-out / 2);
+	right: 0;
+	z-index: -1;
+	border-bottom: $ribbon-height solid #fba809;
+	transform: skew(0deg, -45deg);
+// 	background: #fdd600;
+}
+
+// .ribbon {
+// 	position: relative;
+// 	right: 0;
+// 	float: right;
+// 	background: #ffdf2d;
+// 	width: $ribbon-size;
+// 	height: $ribbon-height;
+// }
+
+// .ribbon-flip {
+// 	position: relative;
+// 	right: 0;
+// 	float: right;
+// 	background: #fdd600;
+// 	width: $ribbon-out;
+// 	height: $ribbon-height;
+// }
