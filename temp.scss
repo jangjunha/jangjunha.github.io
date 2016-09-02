@@ -27,6 +27,7 @@ h1 {
 	/*border-radius: 2px;*/
 	box-shadow: 0 0px 24px rgba(110,110,110,0.2);
 	/*border: 6px solid #90A5A2;*/
+	border-top: 2px solid #ffdf2d;
 }
 
 .main-footer {
@@ -64,6 +65,7 @@ h1 {
 }
 
 .ribbon-box {
+	display: none;
 	position: relative;
 	float: right;
 	right: -($page-margin + $ribbon-out);
