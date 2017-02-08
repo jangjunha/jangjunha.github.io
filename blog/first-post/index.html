@@ -1,44 +1,56 @@
 <!doctype html>
-<meta charset="utf-8">
-<link rel="stylesheet" href="../../static/style.css">
-<title>Hello Website — jangjunha.github.io</title>
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="../../static/blog-style.css">
+    <link rel="stylesheet" href="../../static/pygments.css">
+    <title>Hello Website</title>
+</head>
 <body>
-  <header>
-    <h1>jangjunha.github.io</h1>
-    <nav>
-      <ul class="nav navbar-nav">
-        <li><a href="../../">Welcome</a></li>
+    <div class="container">
         
-          <li class="active"><a href="../../blog/">Blog</a></li>
-        
-          <li><a href="../../projects/">Projects</a></li>
-        
-          <li><a href="../../about/">About</a></li>
-        
-      </ul>
-    </nav>
-  </header>
-  <div class="page">
+<div class="post">
     
-  
   <div class="blog-post">
   
-    <h2>Hello Website</h2>
+    <h2 class="title">Hello Website</h2>
   
   <p class="meta">
-    written by
+    Posted on 2016-09-30&nbsp;&nbsp;<span style="color: #cdd">—</span>&nbsp;
     
-      jangjunha
+    <a href="../../blog/tags/c/" class="tag">c</a>
+     · 
     
-    on 2016-09-30
+    <a href="../../blog/tags/python/" class="tag">python</a>
+    
+    
   </p>
-  <p>This is an example blog post.  Not much here but that's not the point :)</p>
+  <div class="content">
+      <p>This is an example blog post.  Not much here but that's not the point :)</p>
+<h3 id="say-hello-using-python">Say "Hello" using Python</h3><div class="highlight"><pre><span></span><span class="k">print</span><span class="p">(</span><span class="s2">&quot;Hello, world!&quot;</span><span class="p">)</span>
+</pre></div>
+<h3 id="say-hello-using-c">Say "Hello" using C</h3><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Hello, world!</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
 
   </div>
-
-
   </div>
-  <footer>
-    &copy; Copyright 2016 by jangjunha.
-  </footer>
+
+</div>
+
+    </div>
+
+    <footer>
+        <nav>
+            <ul>
+                <li><a href="/">home</a></li>
+                <li><a href="/blog">blog</a></li>
+                <li><a href="/resume">resume</a></li>
+            </ul>
+        </nav>
+        <p class="copyright">&copy; <span style="font-weight: 600">jangjunha</span></p>
+    </footer>
 </body>
