@@ -2,6 +2,16 @@ html {
     font-family: sans-serif;
 }
 
+body {
+  background-color: #dee;
+  margin: 0;
+}
+
+.container-wrapper {
+  padding: 16px 0;
+  background-color: white;
+}
+
 .container {
     max-width: 750px;
     margin: 32px auto;
@@ -135,7 +145,7 @@ html {
     display: block;
     max-width: 750px;
     box-shadow: 0 0 18px rgba(0,0,0,0.25);
-    margin: 16px auto 8px auto;
+    margin: 16px auto 0 auto;
 }
 
 .post .content figcaption {
@@ -144,22 +154,28 @@ html {
     line-height: 1.6em;
     color: #555;
     font-weight: 400;
-    margin: -2px 16px 8px 16px;
-    text-align: center;
+    margin: -4px 16px 0 16px;
 }
 
 footer {
-    border-top: 1px solid #bcc;
-    margin: 64px auto;
+    /*border-top: 1px solid #bcc;*/
+    margin: 32px auto;
     text-align: center;
-    color: #8aa;
+    color: #bcc;
 }
 
 footer .copyright {
-    margin: 16px auto;
+    display: inline-block;
+    /*margin: 16px auto;*/
+}
+
+footer > *:not(:last-child):after {
+    content: "__";
+    margin: 0 16px;
 }
 
 footer nav {
+    display: inline-block;
     margin: 22px auto;
 }
 
