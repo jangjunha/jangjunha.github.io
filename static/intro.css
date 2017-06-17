@@ -4,11 +4,12 @@
 }
 
 .container > ul > li {
-
+  margin: 38px 0;
 }
 
 .container > ul > li > h3 {
   font-size: 2.4rem;
+  margin: 8px 0;
 }
 
 .container > ul > li > h3 > a {
