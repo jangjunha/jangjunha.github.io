@@ -1,0 +1,17 @@
+.container > ul {
+  list-style: none;
+  list-style-type: none;
+}
+
+.container > ul > li {
+
+}
+
+.container > ul > li > h3 {
+  font-size: 2.4rem;
+}
+
+.container > ul > li > h3 > a {
+  color: #bcc;
+  text-decoration: none;
+}
