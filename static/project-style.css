@@ -1,0 +1,16 @@
+.images img {
+  max-width: 100%;
+}
+
+.images .image-wrapper {
+  margin: 32px 0;
+  text-align: center;
+}
+
+.images .image-wrapper figcaption {
+  font-size: 0.9em;
+  line-height: 1.6em;
+  color: #555;
+  font-weight: 400;
+  text-align: center;
+}
