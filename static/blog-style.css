@@ -168,6 +168,15 @@ body {
   background-color: #FFF8ED;
 }
 
+.post .content ul {
+  list-style-type: square;
+}
+
+.post .content p + .highlight,
+.post .content p + pre {
+  margin-top: -24px;
+}
+
 .post .content pre {
     background-color: #f8f8f8;
     padding: 8px 16px;
