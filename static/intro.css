@@ -16,3 +16,7 @@
   color: #bcc;
   text-decoration: none;
 }
+
+.container > ul > li > h3 > a:hover {
+  color: #8aa;
+}

@@ -149,11 +149,34 @@ body {
     text-decoration: none;
 }
 
+.post .content table {
+  border-collapse: separate;
+  border-spacing: 2px;
+}
+.post .content table th,
+.post .content table td {
+  padding: 6px 12px;
+}
+.post .content table thead {}
+.post .content table thead tr {}
+.post .content table thead tr th {
+  background-color: #E3F1FF;
+}
+.post .content table tbody {}
+.post .content table tbody tr {}
+.post .content table tbody tr td {
+  background-color: #FFF8ED;
+}
+
 .post .content pre {
     background-color: #f8f8f8;
     padding: 8px 16px;
     border-radius: 2px;
     overflow-x: scroll;
+}
+
+.post .content code {
+  background-color: #f8f8f8;
 }
 
 .post .content h1,
@@ -168,7 +191,7 @@ body {
 .post .content p {
     color: #233;
     text-indent: 1em;
-    margin: 32px 0;
+    margin: 16px 0 32px 0;
 }
 
 .post .content img {
