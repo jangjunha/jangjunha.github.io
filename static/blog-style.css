@@ -59,13 +59,38 @@ body {
     background: #f2fafa;
 }
 
+.tags-list-wrapper {
+  display: inline-block;
+}
+
+ul.tags-list {
+  list-style: none;
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+}
+
+ul.tags-list li {
+  display: inline;
+  list-style-type: none;
+}
+
+ul.tags-list li:not(:last-child):after {
+  content: "/";
+  font-weight: 200;
+  color: #bcc;
+  padding: 0 8px;
+}
+
 .post-list {
     list-style: none;
     margin-bottom: 36px;
     padding: 0;
 }
 
-.post-list li > a {
+.post-list > li > a {
     color: #222;
     text-decoration: none;
     display: inline-block;
@@ -74,29 +99,34 @@ body {
     padding: 0;
 }
 
-.post-list li > a > * {
+.post-list > li > a > * {
     margin-left: 20px;
     margin-right: 20px;
 }
 
-.post-list li {
+.post-list > li {
     width: 100%;
     margin: 0;
     padding: 0;
     border-bottom: 1px solid #dee;
 }
 
-.post-list li:hover {
+.post-list > li:hover {
     background-color: #f2fafa;
+}
+
+.post-list > li > a {
+  padding-top: 24px;
+  padding-bottom: 24px;
 }
 
 .post-list .title {
     font-size: 1.8rem;
-    margin: 36px 20px 12px 20px;
+    margin: 12px 20px 12px 20px;
 }
 
 .post-list .meta {
-    margin: 12px 20px 36px 20px;
+    margin: 12px 20px 12px 20px;
 }
 
 .post {
@@ -111,27 +141,30 @@ body {
 
 .post .meta,
 .post-list .meta {
-    color: #bcc;
+    color: #8aa;
+    font-weight: 500;
+    overflow: hidden;
 }
 
-.post .meta p,
-.post-list .meta p {
-  display: inline;
+.post .meta .meta-item,
+.post-list .meta .meta-item {
+  float: left;
+  margin: 0;
 }
 
-.post .meta p:not(:first-child),
-.post-list .meta p:not(:first-child) {
+.post .meta .meta-item:not(:first-child),
+.post-list .meta .meta-item:not(:first-child) {
   margin-left: 24px;
 }
 
-.post .meta p span.h,
-.post-list .meta p span.h {
-  color: #cdd;
-  margin-right: 4px;
+.post .meta .meta-item span.h,
+.post-list .meta .meta-item span.h {
+  font-weight: 100;
+  margin-right: 8px;
 }
 
 .post .meta a.tag {
-    color: #bcc;
+    color: #8aa;
     text-decoration: none;
 }
 
@@ -160,12 +193,12 @@ body {
 .post .content table thead {}
 .post .content table thead tr {}
 .post .content table thead tr th {
-  background-color: #E3F1FF;
+  background-color: #dce5e5;
 }
 .post .content table tbody {}
 .post .content table tbody tr {}
 .post .content table tbody tr td {
-  background-color: #FFF8ED;
+  background-color: #f0f7f7;
 }
 
 .post .content ul {
@@ -177,15 +210,16 @@ body {
   margin-top: -24px;
 }
 
-.post .content pre {
+.post .content pre,
+.post .content code {
     background-color: #f8f8f8;
+    font-family: 'Menlo', 'Monaco', 'Consolas', 'monospace';
+}
+
+.post .content pre {
     padding: 8px 16px;
     border-radius: 2px;
     overflow-x: scroll;
-}
-
-.post .content code {
-  background-color: #f8f8f8;
 }
 
 .post .content h1,
@@ -199,8 +233,17 @@ body {
 
 .post .content p {
     color: #233;
-    text-indent: 1em;
     margin: 16px 0 32px 0;
+}
+
+.post .content ul,
+.post .content ol {
+  padding-left: 1.6em;
+}
+
+.post .content ul li:not(:last-child),
+.post .content ol li:not(:last-child) {
+  margin-bottom: 8px;
 }
 
 .post .content img {
@@ -223,7 +266,7 @@ body {
 footer {
     margin: 32px auto;
     text-align: center;
-    color: #bcc;
+    color: #8aa;
 }
 
 footer .copyright {
@@ -234,6 +277,7 @@ footer .copyright {
 footer > *:not(:last-child):after {
     content: "__";
     margin: 0 16px;
+    color: #bcc;
 }
 
 footer nav {
@@ -259,11 +303,40 @@ footer nav > ul > li {
 }
 
 footer nav > ul > li:not(:last-child):after {
-    content: "·";
+    content: "/";
     margin: 0 16px;
+    color: #bcc;
 }
 
 footer nav > ul > li > a {
-    color: #bcc;
+    color: #8aa;
     text-decoration: none;
+}
+
+/* Extra small devices (portrait phones, less than 576px) */
+@media (max-width: 575px) {
+  .post-list .meta .meta-item {
+    width: 100%;
+  }
+
+  .post-list .meta .meta-item:not(:first-child) {
+    margin-left: 0;
+    margin-top: 8px;
+  }
+}
+
+/* Small devices (landscape phones, less than 768px) */
+@media (max-width: 767px) {
+  .container-wrapper {
+    padding: 8px 8px;
+  }
+
+  .post {
+    padding-top: 16px;
+  }
+  
+  .post .title {
+      font-size: 2.8rem;
+      margin: 32px auto;
+  }
 }

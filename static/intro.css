@@ -3,6 +3,10 @@
   list-style-type: none;
 }
 
+.container > ul {
+  padding-left: 40px;
+}
+
 .container > ul > li {
   margin: 38px 0;
 }
@@ -19,4 +23,11 @@
 
 .container > ul > li > h3 > a:hover {
   color: #8aa;
+}
+
+/* Small devices (landscape phones, 576px and up) */
+@media (max-width: 767px) {
+  .container > ul {
+    padding-left: 0;
+  }
 }
