@@ -86,7 +86,7 @@ myApp.controller('ProjectCtrl', function ($scope) {
             'links': [
                 {
                     'name': 'WEB',
-                    'url': 'http://http://noble-particle-729.appspot.com'
+                    'url': 'http://noble-particle-729.appspot.com'
                 }
             ],
             'description': '온라인 예술 작품 전시 서비스<br>Smarteen App Challenge 2014 장려상',
