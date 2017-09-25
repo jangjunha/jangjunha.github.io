@@ -1,0 +1,282 @@
+#box-profile {
+    border-top: 3px solid #666;
+    overflow: auto;
+    padding-bottom: 0;
+    border-bottom: 1px solid #ccc;
+    margin-top: 2.6em;
+    margin-bottom: 0;
+}
+
+.profile-link {
+    color: #888;
+    text-decoration: none;
+}
+
+.item-box {
+    width: 700px;
+    margin: 0.4em auto;
+    padding: 1.2em 2em;
+    border-bottom: 1px solid #888;
+}
+
+.skill-box {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.skill-box > li {
+    display: inline-block;
+    margin: 0.6em 0.8em 0.6em 0;
+    padding: 0.1em 0.6em;
+    line-height: 1.2em;
+    border: 1px solid #aaa;
+    background-color: #efefef;
+}
+
+.list-box {
+    list-style: square;
+    line-height: 1.8em;
+    margin-bottom: 0.2em;
+}
+
+.project-box {
+    list-style: none;
+    padding-left: 1.4em;
+}
+
+.project-box > li {
+    height: 120px;
+    border-bottom: 1.5em solid transparent;
+    display: table;
+}
+
+.project-box > li > img {
+    display: table-cell;
+    height: 120px;
+    width: 200px;
+    
+    background-color: blanchedalmond;
+}
+
+.project-box > li > .project-info {
+    height: 120px;
+    display: table-cell;
+    vertical-align: top;
+    width: 100%;
+}
+
+.project-head {
+    overflow: auto;
+    zoom: 1;
+    width: 100%;
+    border-bottom: 1px solid #cfcfcf;
+}
+
+.project-body {
+    padding-left: 1.6em;
+}
+
+.project-head > * {
+    margin: 0.2em 0.6em 0.1em 0;
+    display: block;
+    line-height: 1.6em;
+}
+
+.project-head > .project-title, .project-head > .project-role {
+    float: left;
+}
+
+.project-head > .link-icon {
+    float: right;
+}
+
+.project-title {
+    margin-left: 1em;
+    font-size: 1em;
+}
+
+.link-icon {
+    font-size: 0.9em;
+    margin: 0.5em 0 0 0.2em;
+    padding: 0 0.5em;
+    line-height: 1.2em;
+    text-decoration: none;
+    color: #888;
+}
+
+.project-role:before {
+    content: '—';
+    margin-right: 0.3em;
+}
+
+.project-description {
+    margin: 0.5em 0 0 0;
+    line-height: 1.4em;
+}
+
+h2 {
+    margin: 0 0 0.2em 0; 
+}
+
+h2:before {
+    content: '>';
+    padding-right: 0.5em;
+}
+
+#name-ko {
+    display: inline-block;
+    margin: 0.25em;
+}
+#name-en {
+    display: inline-block;
+    margin: 0.25em;
+}
+#headline {
+    margin: 0.25em 0.25em 0.25em 0.35em;
+}
+
+#profile-main {
+    float: left;
+    padding-right: 11em;
+    margin-bottom: 1.2em;
+}
+#profile-info {
+    float: left;
+    padding: 0em 0em 0em 2em;
+}
+#box-message {
+    margin-top: 0;
+    padding: 0.4em 2em;
+}
+#box-message > p {
+    margin: 0.8em auto;
+}
+
+#popup-img-box {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.75);
+    white-space: nowrap;
+    text-align: center;
+    vertical-align: middle;
+}
+
+#popup-img-box:before {
+    content: "";
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+}
+
+#popup-img {
+    max-width: 100%;
+    max-height: 100%;
+    vertical-align: middle;
+    vertical-align: middle;
+    box-shadow: 0 0 3em rgba(0,0,0,0.8);
+}
+
+#img-description {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    min-height: 6em;
+    box-shadow: 0 0 3em rgba(0,0,0,0.8);
+    background-color: rgba(255,255,255,0.85);
+    transition: opacity 200ms ease;
+    padding: 1em 0 0.5em 0;
+}
+
+#img-description > h5 {
+    margin: 0 auto 1.2em auto;
+    padding-bottom: 0.2em;
+    color: #888;
+    letter-spacing: 0.3em;
+    border-bottom: 1px solid #aaa;
+    width: 16em;
+}
+
+#img-description > p {
+    margin: 0 6em 1em 6em;
+    text-align: justify;
+    white-space: normal;
+    line-height: 1.5em;
+}
+
+#img-description > p > br {
+    line-height: 2.2em;
+}
+
+#img-description:hover {
+    opacity: 0;
+    transition: opacity 200ms ease;
+}
+
+.btn-component {
+    position: fixed;
+    top: 50%;
+    width: 4em;
+    height: 6em;
+    border: 0;
+    background-color: rgba(0,0,0,0.2);
+    color: white;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 200ms ease;
+}
+
+.btn-component:hover {
+    background-color: rgba(0,0,0,0.5);
+    transition: background-color 200ms ease;
+}
+
+.btn-component:disabled {
+    cursor: default;
+    color: rgba(255,255,255,0.75);
+    background-color: rgba(0,0,0,0.05);
+}
+
+#btn-pager-prev {
+    left: 2em;
+}
+
+#btn-pager-next {
+    right: 2em;
+}
+
+#btn-close {
+    top: 2em;
+    right: 2em;
+    width: 4em;
+    height: 4em;
+}
+
+.clickable {
+    cursor: pointer;
+}
+
+.invisible {
+    display: none;
+}
+
+@media screen and (max-width: 720px) {
+    .item-box {
+        width: 95%;
+    }
+    #profile-main {
+        width: 100%;
+    }
+    #profile-info {
+        width: 100%;
+        border: 0;
+        padding: 0;
+    }
+    #img-description > p {
+        margin: 1em;
+    }
+}
