@@ -90,7 +90,7 @@
     <span class="p">.</span><span class="n">retry</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 </pre></div>
 <p>재시도 동작을 커스터마이징 하는 것 역시 쉽습니다.</p>
-<h2 id="delegates">Delegates</h2><p>장황하고 표현적이지 않은 아래 코드 대신</p>
+<h2 id="delegates">Delegates</h2><p>장황하고 직관적이지 않은(non-expressive) 아래 코드 대신</p>
 <div class="highlight"><pre><span></span><span class="kd">public</span> <span class="kd">func</span> <span class="nf">scrollViewDidScroll</span><span class="p">(</span><span class="n">scrollView</span><span class="p">:</span> <span class="bp">UIScrollView</span><span class="p">)</span> <span class="p">{</span> <span class="p">[</span><span class="kr">weak</span> <span class="kc">self</span><span class="p">]</span> <span class="c1">// what scroll view is this bound to?</span>
     <span class="kc">self</span><span class="p">?.</span><span class="n">leftPositionConstraint</span><span class="p">.</span><span class="n">constant</span> <span class="p">=</span> <span class="n">scrollView</span><span class="p">.</span><span class="n">contentOffset</span><span class="p">.</span><span class="n">x</span>
 <span class="p">}</span>
@@ -207,7 +207,7 @@
 <p>반대로 적절하게 사용한다면 명령형 언어를 사용하여 효율적이고 하드웨어와 가까운 코드를 작성할 수 있습니다.</p>
 <p>일반적으로는 상태를 최대한 간결하게 유지하고, 모델로부터 만들어진 데이터의 경우 <a href="https://developer.apple.com/videos/play/wwdc2014-229">단방향 데이터 흐름</a>을 사용하여 combinatorial explosion 문제가 발생하지 않도록 합니다.</p>
 <p>이 때 Rx가 빛을 발합니다.</p>
-<p>Rx는 기능적(functional) 세계와 명령형(imperative) 세계의 사이의 sweet spot입니다. Rx를 사용하면 불변의 정의(Immutable definitions)와 순수 함수(Pure functions)를 사용하여 변화하는 상태의 순간 순간에 대한 처리를 안정적이고 조합 가능한(Composable) 방식으로 처리할 수 있습니다.</p>
+<p>Rx는 기능적(functional) 세계와 명령형(imperative) 세계의 사이의 sweet spot입니다. Rx를 사용하면 불변의 정의(immutable definitions)와 순수 함수(pure functions)를 사용하여 변화하는 상태의 순간 순간에 대한 처리를 안정적이고 조합 가능한(composable) 방식으로 처리할 수 있습니다.</p>
 <p>실사용 예를 들어볼까요?</p>
 <h2 id="integration">간단한 Integration</h2><p>기존의 코드에서 observable을 사용하려면 어떻게 해야 할까요? 어렵지 않습니다. 아래 코드는 RxCocoa에서 가져온 코드입니다. 이렇게만 하면 <code>URLSession</code>을 사용하여 HTTP 요청을 보내는 작업이 observable을 사용하도록 래핑할 수 있습니다.</p>
 <div class="highlight"><pre><span></span><span class="kd">extension</span> <span class="nc">Reactive</span> <span class="k">where</span> <span class="n">Base</span><span class="p">:</span> <span class="n">URLSession</span> <span class="p">{</span>
