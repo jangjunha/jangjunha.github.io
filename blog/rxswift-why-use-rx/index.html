@@ -1,0 +1,311 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../../static/blog-style.css">
+  <link rel="stylesheet" href="../../static/pygments.css">
+  <title>[번역] Rx를 왜 사용해야하나요?</title>
+  
+<meta property="fb:app_id" content="1923287127899740" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="[번역] Rx를 왜 사용해야하나요?" />
+<meta property="og:url" content="https://jangjunha.github.io/https://jangjunha.github.io/blog/rxswift-why-use-rx/" />
+
+
+  <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-101878699-1', 'auto');
+  ga('send', 'pageview');
+
+  </script>
+</head>
+<body>
+  <div class="container-wrapper">
+    <div class="container">
+      
+<div class="post">
+  <div class="blog-post">
+    
+<!-- <div class="blog-post"> -->
+    <h2 class="title">[번역] Rx를 왜 사용해야하나요?</h2>
+    <div class="meta">
+      <div class="meta-item"><span class="h">posted on</span> 2017년 10월 21일</div>
+      <div class="meta-item"><span class="h">tags</span>
+        <div class="tags-list-wrapper">
+        <ul class="tags-list">
+        <li>
+          <a href="../../blog/tags/rx/" class="tag">rx
+          </a>
+        </li>
+        <li>
+          <a href="../../blog/tags/rxswift/" class="tag">rxswift
+          </a>
+        </li>
+        <li>
+          <a href="../../blog/tags/swift/" class="tag">swift
+          </a>
+        </li>
+        <li>
+          <a href="../../blog/tags/translate/" class="tag">translate
+          </a>
+        </li>
+        </ul>
+        </div>
+      </div>
+    </div>
+    
+    <div class="content">
+        <p>이 글은 <a href="https://github.com/ReactiveX/RxSwift">RxSwift</a>의 <a href="https://github.com/ReactiveX/RxSwift/blob/6be49b1605ca12387492703b0447a95ad896ee1f/Documentation/Why.md">문서</a>를 번역한 글입니다.</p>
+<ul>
+<li>원문: <a href="https://github.com/ReactiveX/RxSwift/blob/master/Documentation/Why.md">I came here because I want to understand <strong>why</strong> use rx?</a></li>
+</ul>
+<hr>
+<p><strong>Rx를 사용하면 앱을 선언적인(declarative) 방법으로 만들 수 있습니다.</strong></p>
+<h2 id="">바인딩</h2><div class="highlight"><pre><span></span><span class="n">Observable</span><span class="p">.</span><span class="n">combineLatest</span><span class="p">(</span><span class="n">firstName</span><span class="p">.</span><span class="n">rx</span><span class="p">.</span><span class="n">text</span><span class="p">,</span> <span class="n">lastName</span><span class="p">.</span><span class="n">rx</span><span class="p">.</span><span class="n">text</span><span class="p">)</span> <span class="p">{</span> <span class="nv">$0</span> <span class="o">+</span> <span class="s">&quot; &quot;</span> <span class="o">+</span> <span class="nv">$1</span> <span class="p">}</span>
+    <span class="p">.</span><span class="bp">map</span> <span class="p">{</span> <span class="s">&quot;Greetings, </span><span class="si">\(</span><span class="nv">$0</span><span class="si">)</span><span class="s">&quot;</span> <span class="p">}</span>
+    <span class="p">.</span><span class="n">bind</span><span class="p">(</span><span class="n">to</span><span class="p">:</span> <span class="n">greetingLabel</span><span class="p">.</span><span class="n">rx</span><span class="p">.</span><span class="n">text</span><span class="p">)</span>
+</pre></div>
+<p><code>UITableView</code>와 <code>UICollectionView</code>에도 마찬가지로 사용할 수 있습니다.</p>
+<div class="highlight"><pre><span></span><span class="n">viewModel</span>
+    <span class="p">.</span><span class="n">rows</span>
+    <span class="p">.</span><span class="n">bind</span><span class="p">(</span><span class="n">to</span><span class="p">:</span> <span class="n">resultsTableView</span><span class="p">.</span><span class="n">rx</span><span class="p">.</span><span class="n">items</span><span class="p">(</span><span class="n">cellIdentifier</span><span class="p">:</span> <span class="s">&quot;WikipediaSearchCell&quot;</span><span class="p">,</span> <span class="n">cellType</span><span class="p">:</span> <span class="n">WikipediaSearchCell</span><span class="p">.</span><span class="kc">self</span><span class="p">))</span> <span class="p">{</span> <span class="p">(</span><span class="kc">_</span><span class="p">,</span> <span class="n">viewModel</span><span class="p">,</span> <span class="n">cell</span><span class="p">)</span> <span class="k">in</span>
+        <span class="n">cell</span><span class="p">.</span><span class="n">title</span> <span class="p">=</span> <span class="n">viewModel</span><span class="p">.</span><span class="n">title</span>
+        <span class="n">cell</span><span class="p">.</span><span class="n">url</span> <span class="p">=</span> <span class="n">viewModel</span><span class="p">.</span><span class="n">url</span>
+    <span class="p">}</span>
+    <span class="p">.</span><span class="n">disposed</span><span class="p">(</span><span class="n">by</span><span class="p">:</span> <span class="n">disposeBag</span><span class="p">)</span>
+</pre></div>
+<p><strong>단순 바인딩같이 dispose가 꼭 필요하지 않은 경우에도 항상 <code>.disposed(by: disposeBag)</code>를 사용하기를 공식적으로 추천합니다.</strong></p>
+<h2 id="">재시도</h2><p>API가 항상 제대로 작동하면 좋겠지만 그렇지만은 않습니다. 예시로 다음과 같은 API 메소드가 있습니다:</p>
+<div class="highlight"><pre><span></span><span class="kd">func</span> <span class="nf">doSomethingIncredible</span><span class="p">(</span><span class="n">forWho</span><span class="p">:</span> <span class="nb">String</span><span class="p">)</span> <span class="kr">throws</span> <span class="p">-&gt;</span> <span class="n">IncredibleThing</span>
+</pre></div>
+<p>만약 이 기능을 있는 그대로 사용한다면, 오류가 발생한 경우 재시도하도록 만들기 어렵습니다. <a href="https://en.wikipedia.org/wiki/Exponential_backoff">Exponential backoff</a> 모델링은 복잡함은 말 할 것도 없습니다. 물론 가능합니다. 하지만 코드에 신경쓰지 않는 없는 일시적인 상태(transient state)들이 많이 들어갈 것이고, 이는 재사용도 불가능합니다.</p>
+<p>이상적으로는 재시도라는 본질에 집중하고 어느 동작이던간에 적용할 수 있어야합니다.</p>
+<p>Rx를 사용하면 이처럼 간단하게 재시도할 수 있습니다.</p>
+<div class="highlight"><pre><span></span><span class="n">doSomethingIncredible</span><span class="p">(</span><span class="s">&quot;me&quot;</span><span class="p">)</span>
+    <span class="p">.</span><span class="n">retry</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+<p>재시도 동작을 커스터마이징 하는 것 역시 쉽습니다.</p>
+<h2 id="delegates">Delegates</h2><p>장황하고 표현적이지 않은 아래 코드 대신</p>
+<div class="highlight"><pre><span></span><span class="kd">public</span> <span class="kd">func</span> <span class="nf">scrollViewDidScroll</span><span class="p">(</span><span class="n">scrollView</span><span class="p">:</span> <span class="bp">UIScrollView</span><span class="p">)</span> <span class="p">{</span> <span class="p">[</span><span class="kr">weak</span> <span class="kc">self</span><span class="p">]</span> <span class="c1">// what scroll view is this bound to?</span>
+    <span class="kc">self</span><span class="p">?.</span><span class="n">leftPositionConstraint</span><span class="p">.</span><span class="n">constant</span> <span class="p">=</span> <span class="n">scrollView</span><span class="p">.</span><span class="n">contentOffset</span><span class="p">.</span><span class="n">x</span>
+<span class="p">}</span>
+</pre></div>
+<p>다음처럼 작성할 수 있습니다.</p>
+<div class="highlight"><pre><span></span><span class="kc">self</span><span class="p">.</span><span class="n">resultsTableView</span>
+    <span class="p">.</span><span class="n">rx</span><span class="p">.</span><span class="n">contentOffset</span>
+    <span class="p">.</span><span class="bp">map</span> <span class="p">{</span> <span class="nv">$0</span><span class="p">.</span><span class="n">x</span> <span class="p">}</span>
+    <span class="p">.</span><span class="n">bind</span><span class="p">(</span><span class="n">to</span><span class="p">:</span> <span class="kc">self</span><span class="p">.</span><span class="n">leftPositionConstraint</span><span class="p">.</span><span class="n">rx</span><span class="p">.</span><span class="n">constant</span><span class="p">)</span>
+</pre></div>
+<h2 id="kvo">KVO</h2><p>아래 방법 대신에</p>
+<pre><code>`TickTock` was deallocated while key value observers were still registered with it. Observation info was leaked, and may even become mistakenly attached to some other object.
+</code></pre>
+<div class="highlight"><pre><span></span><span class="p">-(</span><span class="kt">void</span><span class="p">)</span><span class="nf">observeValueForKeyPath:</span><span class="p">(</span><span class="bp">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">keyPath</span>
+                     <span class="nf">ofObject:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">object</span>
+                       <span class="nf">change:</span><span class="p">(</span><span class="bp">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="nv">change</span>
+                      <span class="nf">context:</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="nv">context</span>
+</pre></div>
+<p><a href="https://github.com/ReactiveX/RxSwift/blob/master/Documentation/GettingStarted.md#kvo"><code>rx.observe</code>와 <code>rx.observeWeakly</code></a>를 사용하세요.</p>
+<p>그러면 다음과 같이 사용할 수 있습니다:</p>
+<div class="highlight"><pre><span></span><span class="n">view</span><span class="p">.</span><span class="n">rx</span><span class="p">.</span><span class="n">observe</span><span class="p">(</span><span class="bp">CGRect</span><span class="p">.</span><span class="kc">self</span><span class="p">,</span> <span class="s">&quot;frame&quot;</span><span class="p">)</span>
+    <span class="p">.</span><span class="n">subscribe</span><span class="p">(</span><span class="n">onNext</span><span class="p">:</span> <span class="p">{</span> <span class="n">frame</span> <span class="k">in</span>
+        <span class="bp">print</span><span class="p">(</span><span class="s">&quot;Got new frame </span><span class="si">\(</span><span class="n">frame</span><span class="si">)</span><span class="s">&quot;</span><span class="p">)</span>
+    <span class="p">})</span>
+    <span class="p">.</span><span class="n">disposed</span><span class="p">(</span><span class="n">by</span><span class="p">:</span> <span class="n">disposeBag</span><span class="p">)</span>
+</pre></div>
+<div class="highlight"><pre><span></span><span class="n">someSuspiciousViewController</span>
+    <span class="p">.</span><span class="n">rx</span><span class="p">.</span><span class="n">observeWeakly</span><span class="p">(</span><span class="nb">Bool</span><span class="p">.</span><span class="kc">self</span><span class="p">,</span> <span class="s">&quot;behavingOk&quot;</span><span class="p">)</span>
+    <span class="p">.</span><span class="n">subscribe</span><span class="p">(</span><span class="n">onNext</span><span class="p">:</span> <span class="p">{</span> <span class="n">behavingOk</span> <span class="k">in</span>
+        <span class="bp">print</span><span class="p">(</span><span class="s">&quot;Cats can purr? </span><span class="si">\(</span><span class="n">behavingOk</span><span class="si">)</span><span class="s">&quot;</span><span class="p">)</span>
+    <span class="p">})</span>
+    <span class="p">.</span><span class="n">disposed</span><span class="p">(</span><span class="n">by</span><span class="p">:</span> <span class="n">disposeBag</span><span class="p">)</span>
+</pre></div>
+<h2 id="notifications">Notifications</h2><p>아래 방법 대신</p>
+<div class="highlight"><pre><span></span><span class="p">@</span><span class="n">available</span><span class="p">(</span><span class="n">iOS</span> <span class="mf">4.0</span><span class="p">,</span> <span class="o">*</span><span class="p">)</span>
+<span class="n">public</span> <span class="n">func</span> <span class="n">addObserverForName</span><span class="p">(</span><span class="nl">name</span><span class="p">:</span> <span class="n">String</span><span class="o">?</span><span class="p">,</span> <span class="n">object</span> <span class="nl">obj</span><span class="p">:</span> <span class="n">AnyObject</span><span class="o">?</span><span class="p">,</span> <span class="nl">queue</span><span class="p">:</span> <span class="bp">NSOperationQueue</span><span class="o">?</span><span class="p">,</span> <span class="n">usingBlock</span> <span class="nl">block</span><span class="p">:</span> <span class="p">(</span><span class="bp">NSNotification</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Void</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NSObjectProtocol</span>
+</pre></div>
+<p>이렇게 쓰세요.</p>
+<div class="highlight"><pre><span></span><span class="n">NotificationCenter</span><span class="p">.</span><span class="k">default</span>
+    <span class="p">.</span><span class="n">rx</span><span class="p">.</span><span class="n">notification</span><span class="p">(</span><span class="bp">NSNotification</span><span class="p">.</span><span class="n">Name</span><span class="p">.</span><span class="n">UITextViewTextDidBeginEditing</span><span class="p">,</span> <span class="n">object</span><span class="p">:</span> <span class="n">myTextView</span><span class="p">)</span>
+    <span class="p">.</span><span class="bp">map</span> <span class="p">{</span>  <span class="cm">/*do something with data*/</span> <span class="p">}</span>
+    <span class="p">....</span>
+</pre></div>
+<h2 id="transient-state">일시적인 상태(Transient state)</h2><p>비동기 프로그램을 만드는 데는 일시적인 상태와 관련된 문제가 많습니다. 검색창의 자동완성 기능이 전형적인 사례입니다.</p>
+<p>만약 Rx를 사용하지 않고 자동완성 코드를 작성한다면 여러 문제들을 해결해야합니다. 먼저 <code>abc</code>에서 <code>c</code>가 타이핑됐을 때,  <code>ab</code>에 대한 이전 요청이 완료되지 않았다면 이전 요청을 취소해야합니다. 이 문제를 해결하는 건 크게 어렵지는 않습니다. (완료되지 않은) 이전 요청을 참조하는 변수를 추가하면 됩니다.</p>
+<p>다음은 요청이 실패했을 경우 복잡한 재시도 로직을 작성해야한다는 문제입니다. 이것도 재시도 횟수 변수 몇 개를 추가해서 해결할 수는 있습니다.</p>
+<p>하지만 서버에 요청을 보내기 전에 잠시 기다리도록 하는 것이 좋습니다. 사용자가 매우 느리게 타이핑하는 경우에 타이핑 할 때마다 서버에 요청을 보내고 싶지는 않을 것입니다. 또 다시 타이머 변수를 추가해야하겠죠?</p>
+<p>검색중인 경우와 재시도 끝에 실패 한 경우 이를 화면에 표시하는 것도 문제입니다.</p>
+<p>이 모든 것을 구현하는 것과 테스트하는 것은 장황합니다. 하지만 Rx를 사용하면 같은 동작을 다음과 같이 작성할 수 있습니다.</p>
+<div class="highlight"><pre><span></span><span class="n">searchTextField</span><span class="p">.</span><span class="n">rx</span><span class="p">.</span><span class="n">text</span>
+    <span class="p">.</span><span class="n">throttle</span><span class="p">(</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">scheduler</span><span class="p">:</span> <span class="n">MainScheduler</span><span class="p">.</span><span class="n">instance</span><span class="p">)</span>
+    <span class="p">.</span><span class="n">distinctUntilChanged</span><span class="p">()</span>
+    <span class="p">.</span><span class="n">flatMapLatest</span> <span class="p">{</span> <span class="n">query</span> <span class="k">in</span>
+        <span class="n">API</span><span class="p">.</span><span class="n">getSearchResults</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+            <span class="p">.</span><span class="n">retry</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+            <span class="p">.</span><span class="n">startWith</span><span class="p">([])</span> <span class="c1">// clears results on new search term</span>
+            <span class="p">.</span><span class="n">catchErrorJustReturn</span><span class="p">([])</span>
+    <span class="p">}</span>
+    <span class="p">.</span><span class="n">subscribe</span><span class="p">(</span><span class="n">onNext</span><span class="p">:</span> <span class="p">{</span> <span class="n">results</span> <span class="k">in</span>
+      <span class="c1">// UI에 바인딩</span>
+    <span class="p">})</span>
+    <span class="p">.</span><span class="n">disposed</span><span class="p">(</span><span class="n">by</span><span class="p">:</span> <span class="n">disposeBag</span><span class="p">)</span>
+</pre></div>
+<p>추가적인 변수가 없어도 됩니다. Rx가 복잡한 일시적인 상태들을 모두 처리합니다.</p>
+<h2 id="compositional-disposal">구성된 작업 중단(Compositional disposal)</h2><p>테이블뷰에 블러 처리된 이미지를 표시해야 하는 상황을 가정해봅시다. 먼저 URL에 대한 이미지를 다운로드하여 디코딩하고, 블러 처리를 해야합니다.</p>
+<p>네트워크 요청과 이미지 블러 처리는 비용이 큰 작업이기때문에 테이블뷰 셀이 보이는 영역에서 벗어난다면 작업이 취소되는 것이 좋습니다.</p>
+<p>마찬가지로 블러 처리 비용이 크기 때문에 동시에 처리하는 이미지의 개수를 제한한다면 더욱 좋습니다.</p>
+<p>Rx를 사용하면 이 모든 걸 다음과 같이 구현할 수 있습니다.</p>
+<div class="highlight"><pre><span></span><span class="c1">// this is a conceptual solution</span>
+<span class="kd">let</span> <span class="nv">imageSubscription</span> <span class="p">=</span> <span class="n">imageURLs</span>
+    <span class="p">.</span><span class="n">throttle</span><span class="p">(</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">scheduler</span><span class="p">:</span> <span class="n">MainScheduler</span><span class="p">.</span><span class="n">instance</span><span class="p">)</span>
+    <span class="p">.</span><span class="n">flatMapLatest</span> <span class="p">{</span> <span class="n">imageURL</span> <span class="k">in</span>
+        <span class="n">API</span><span class="p">.</span><span class="n">fetchImage</span><span class="p">(</span><span class="n">imageURL</span><span class="p">)</span>
+    <span class="p">}</span>
+    <span class="p">.</span><span class="n">observeOn</span><span class="p">(</span><span class="n">operationScheduler</span><span class="p">)</span>
+    <span class="p">.</span><span class="bp">map</span> <span class="p">{</span> <span class="n">imageData</span> <span class="k">in</span>
+        <span class="k">return</span> <span class="n">decodeAndBlurImage</span><span class="p">(</span><span class="n">imageData</span><span class="p">)</span>
+    <span class="p">}</span>
+    <span class="p">.</span><span class="n">observeOn</span><span class="p">(</span><span class="n">MainScheduler</span><span class="p">.</span><span class="n">instance</span><span class="p">)</span>
+    <span class="p">.</span><span class="n">subscribe</span><span class="p">(</span><span class="n">onNext</span><span class="p">:</span> <span class="p">{</span> <span class="n">blurredImage</span> <span class="k">in</span>
+        <span class="n">imageView</span><span class="p">.</span><span class="n">image</span> <span class="p">=</span> <span class="n">blurredImage</span>
+    <span class="p">})</span>
+    <span class="p">.</span><span class="n">disposed</span><span class="p">(</span><span class="n">by</span><span class="p">:</span> <span class="n">reuseDisposeBag</span><span class="p">)</span>
+</pre></div>
+<p><code>imageSubscription</code>이 dispose되면 의존된 모든 비동기 작업들이 취소되고 잘못 바인딩된 이미지가 없는지 확인합니다.</p>
+<h2 id="">네트워크 요청 결합하기</h2><p>두 가지 요청을 보내고 둘 모두 응답했을 때 그 결과를 결합하려면 어떻게 해야 할까요?</p>
+<p><code>zip</code> 연산자를 사용하면 됩니다.</p>
+<div class="highlight"><pre><span></span><span class="kd">let</span> <span class="nv">userRequest</span><span class="p">:</span> <span class="n">Observable</span><span class="p">&lt;</span><span class="n">User</span><span class="p">&gt;</span> <span class="p">=</span> <span class="n">API</span><span class="p">.</span><span class="n">getUser</span><span class="p">(</span><span class="s">&quot;me&quot;</span><span class="p">)</span>
+<span class="kd">let</span> <span class="nv">friendsRequest</span><span class="p">:</span> <span class="n">Observable</span><span class="o">&lt;</span><span class="p">[</span><span class="n">Friend</span><span class="p">]</span><span class="o">&gt;</span> <span class="p">=</span> <span class="n">API</span><span class="p">.</span><span class="n">getFriends</span><span class="p">(</span><span class="s">&quot;me&quot;</span><span class="p">)</span>
+
+<span class="n">Observable</span><span class="p">.</span><span class="n">zip</span><span class="p">(</span><span class="n">userRequest</span><span class="p">,</span> <span class="n">friendsRequest</span><span class="p">)</span> <span class="p">{</span> <span class="n">user</span><span class="p">,</span> <span class="n">friends</span> <span class="k">in</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">friends</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="p">.</span><span class="n">subscribe</span><span class="p">(</span><span class="n">onNext</span><span class="p">:</span> <span class="p">{</span> <span class="n">user</span><span class="p">,</span> <span class="n">friends</span> <span class="k">in</span>
+    <span class="c1">// 결과를 UI에 바인딩</span>
+<span class="p">})</span>
+<span class="p">.</span><span class="n">disposed</span><span class="p">(</span><span class="n">by</span><span class="p">:</span> <span class="n">disposeBag</span><span class="p">)</span>
+</pre></div>
+<p>백그라운드 스레드에서 처리한 API 요청을, 메인 UI 스레드에서 UI에 바인딩하려면 어떻게 해야 할까요? <code>observeOn</code>을 사용하면 됩니다.</p>
+<div class="highlight"><pre><span></span><span class="kd">let</span> <span class="nv">userRequest</span><span class="p">:</span> <span class="n">Observable</span><span class="p">&lt;</span><span class="n">User</span><span class="p">&gt;</span> <span class="p">=</span> <span class="n">API</span><span class="p">.</span><span class="n">getUser</span><span class="p">(</span><span class="s">&quot;me&quot;</span><span class="p">)</span>
+<span class="kd">let</span> <span class="nv">friendsRequest</span><span class="p">:</span> <span class="n">Observable</span><span class="o">&lt;</span><span class="p">[</span><span class="n">Friend</span><span class="p">]</span><span class="o">&gt;</span> <span class="p">=</span> <span class="n">API</span><span class="p">.</span><span class="n">getFriends</span><span class="p">(</span><span class="s">&quot;me&quot;</span><span class="p">)</span>
+
+<span class="n">Observable</span><span class="p">.</span><span class="n">zip</span><span class="p">(</span><span class="n">userRequest</span><span class="p">,</span> <span class="n">friendsRequest</span><span class="p">)</span> <span class="p">{</span> <span class="n">user</span><span class="p">,</span> <span class="n">friends</span> <span class="k">in</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">friends</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="p">.</span><span class="n">observeOn</span><span class="p">(</span><span class="n">MainScheduler</span><span class="p">.</span><span class="n">instance</span><span class="p">)</span>
+<span class="p">.</span><span class="n">subscribe</span><span class="p">(</span><span class="n">onNext</span><span class="p">:</span> <span class="p">{</span> <span class="n">user</span><span class="p">,</span> <span class="n">friends</span> <span class="k">in</span>
+    <span class="c1">// bind them to the user interface</span>
+<span class="p">})</span>
+<span class="p">.</span><span class="n">disposed</span><span class="p">(</span><span class="n">by</span><span class="p">:</span> <span class="n">disposeBag</span><span class="p">)</span>
+</pre></div>
+<p>여기 Rx의 진가를 볼 수 있는 실사용 예가 더 많이 있습니다.</p>
+<h2 id="">상태</h2><p>Mutation이 가능한 언어에서는 쉽게 전역 상태에 접근하고 mutate할 수 있습니다. 공유되는 전역 상태에 대한 mutation을 적절하게 제어하지 않으면 <a href="https://en.wikipedia.org/wiki/Combinatorial_explosion#Computing">combinatorial explosion</a> 문제가 생기기 쉽습니다.</p>
+<p>반대로 적절하게 사용한다면 명령형 언어를 사용하여 효율적이고 하드웨어와 가까운 코드를 작성할 수 있습니다.</p>
+<p>일반적으로는 상태를 최대한 간결하게 유지하고, 모델로부터 만들어진 데이터의 경우 <a href="https://developer.apple.com/videos/play/wwdc2014-229">단방향 데이터 흐름</a>을 사용하여 combinatorial explosion 문제가 발생하지 않도록 합니다.</p>
+<p>이 때 Rx가 빛을 발합니다.</p>
+<p>Rx는 기능적(functional) 세계와 명령형(imperative) 세계의 사이의 sweet spot입니다. Rx를 사용하면 불변의 정의(Immutable definitions)와 순수 함수(Pure functions)를 사용하여 변화하는 상태의 순간 순간에 대한 처리를 안정적이고 조합 가능한(Composable) 방식으로 처리할 수 있습니다.</p>
+<p>실사용 예를 들어볼까요?</p>
+<h2 id="integration">간단한 Integration</h2><p>기존의 코드에서 observable을 사용하려면 어떻게 해야 할까요? 어렵지 않습니다. 아래 코드는 RxCocoa에서 가져온 코드입니다. 이렇게만 하면 <code>URLSession</code>을 사용하여 HTTP 요청을 보내는 작업이 observable을 사용하도록 래핑할 수 있습니다.</p>
+<div class="highlight"><pre><span></span><span class="kd">extension</span> <span class="nc">Reactive</span> <span class="k">where</span> <span class="n">Base</span><span class="p">:</span> <span class="n">URLSession</span> <span class="p">{</span>
+    <span class="kd">public</span> <span class="kd">func</span> <span class="nf">response</span><span class="p">(</span><span class="n">request</span><span class="p">:</span> <span class="n">URLRequest</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">Observable</span><span class="o">&lt;</span><span class="p">(</span><span class="n">Data</span><span class="p">,</span> <span class="n">HTTPURLResponse</span><span class="p">)</span><span class="o">&gt;</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="n">Observable</span><span class="p">.</span><span class="n">create</span> <span class="p">{</span> <span class="n">observer</span> <span class="k">in</span>
+            <span class="kd">let</span> <span class="nv">task</span> <span class="p">=</span> <span class="kc">self</span><span class="p">.</span><span class="n">base</span><span class="p">.</span><span class="n">dataTask</span><span class="p">(</span><span class="n">with</span><span class="p">:</span> <span class="n">request</span><span class="p">)</span> <span class="p">{</span> <span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">error</span><span class="p">)</span> <span class="k">in</span>
+
+                <span class="k">guard</span> <span class="kd">let</span> <span class="nv">response</span> <span class="p">=</span> <span class="n">response</span><span class="p">,</span> <span class="kd">let</span> <span class="nv">data</span> <span class="p">=</span> <span class="n">data</span> <span class="k">else</span> <span class="p">{</span>
+                    <span class="n">observer</span><span class="p">.</span><span class="n">on</span><span class="p">(.</span><span class="n">error</span><span class="p">(</span><span class="n">error</span> <span class="p">??</span> <span class="n">RxCocoaURLError</span><span class="p">.</span><span class="n">unknown</span><span class="p">))</span>
+                    <span class="k">return</span>
+                <span class="p">}</span>
+
+                <span class="k">guard</span> <span class="kd">let</span> <span class="nv">httpResponse</span> <span class="p">=</span> <span class="n">response</span> <span class="k">as</span><span class="p">?</span> <span class="n">HTTPURLResponse</span> <span class="k">else</span> <span class="p">{</span>
+                    <span class="n">observer</span><span class="p">.</span><span class="n">on</span><span class="p">(.</span><span class="n">error</span><span class="p">(</span><span class="n">RxCocoaURLError</span><span class="p">.</span><span class="n">nonHTTPResponse</span><span class="p">(</span><span class="n">response</span><span class="p">:</span> <span class="n">response</span><span class="p">)))</span>
+                    <span class="k">return</span>
+                <span class="p">}</span>
+
+                <span class="n">observer</span><span class="p">.</span><span class="n">on</span><span class="p">(.</span><span class="n">next</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">httpResponse</span><span class="p">))</span>
+                <span class="n">observer</span><span class="p">.</span><span class="n">on</span><span class="p">(.</span><span class="n">completed</span><span class="p">)</span>
+            <span class="p">}</span>
+
+            <span class="n">task</span><span class="p">.</span><span class="n">resume</span><span class="p">()</span>
+
+            <span class="k">return</span> <span class="n">Disposables</span><span class="p">.</span><span class="n">create</span><span class="p">(</span><span class="n">with</span><span class="p">:</span> <span class="n">task</span><span class="p">.</span><span class="n">cancel</span><span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+<h2 id="">장점</h2><p>Rx가 여러분에 코드에 미치는 긍정적인 영향을 다음과 같이 정리할 수 있습니다:</p>
+<ul>
+<li>조합 가능한(Composable) <- Rx는 조합(composition) 그 자체입니다</li>
+<li>재사용 가능한(Reusable) <- 조합 가능하기 때문</li>
+<li>선언적인(Declarative) <- 정의는 변치 않고 오직 값만 바뀌기 때문</li>
+<li>이해하기 쉽고 간결한 <- 추상화 수준이 높아지고 일시적인 상태들이 제거되기 때문</li>
+<li>안정적인 <- Rx 코드는 철저하게 단위 테스트를 거치기 때문</li>
+<li>상태가 적은 <- 단방향 데이터 흐름을 사용하여 앱을 설계하기 때문</li>
+<li>Leak 없는 <- 자원 관리가 쉬워지기 때문</li>
+</ul>
+<h2 id="">이것이 전부가 아닙니다</h2><p>일반적으로 애플리케이션의 최대한 많은 부분에서 Rx를 사용하도록 설계하는 것이 좋습니다.</p>
+<p>하지만 당신이 모든 연산자를 알고 있지 않거나, 각 케이스를 어떤 연산자를 사용해 처리해야하는지는 어떻게 알 수 있을까요?</p>
+<p>Rx의 모든 연산자는 수학을 기반으로 하며 직관적입니다.</p>
+<p>다행히 10-15개의 연산자만으로 전형적인 케이스를 커버할 수 있습니다. 그중에는 이미 익숙한 <code>map</code>, <code>filter</code>, <code>zip</code>, <code>observeOn</code>과 같은 연산자들도 있습니다.</p>
+<p>Rx에는 방대한 양의 <a href="http://reactivex.io/documentation/operators.html">연산자 목록</a>이 있습니다.</p>
+<p>각 연산자마다 어떻게 작동하는지를 설명하는 <a href="http://reactivex.io/documentation/operators/retry.html">마블 다이어그램</a>이 있습니다.</p>
+<p>그런데 이 목록에 없는 연산자가 필요하다면 어떻게 할까요? 여러분이 직접 연산자를 만들 수 있습니다.</p>
+<p>만약에 어떤 이유로 연산자를 만들기 굉장히 어렵거나, 상태 정보를 가지는 레거시 코드 조각으로 작업해야한다면 어떻게 할까요? 조금 지저분할 수 있지만 <a href="https://github.com/ReactiveX/RxSwift/blob/master/Documentation/GettingStarted.md#life-happens">간단히 잠시 Rx의 세계를 벗어나서</a>, 데이터를 처리하고, 다시 돌아오면 됩니다.</p>
+
+    </div>
+    
+
+
+  </div>
+
+    
+    <div class="social-buttons">
+      <div class="fb-share-button" data-href="https://jangjunha.github.io/../../blog/rxswift-why-use-rx/" data-layout="button" data-size="small" data-mobile-iframe="true"></div>
+    </div>
+    <div class="fb-comments" data-href="https://jangjunha.github.io/../../blog/rxswift-why-use-rx/" data-numposts="5" data-width="100%"></div>
+</div>
+
+    </div>
+  </div>
+
+  <footer>
+    <p class="copyright">&copy; <span style="font-weight: 600">jangjunha</span></p>
+    <nav>
+      <ul>
+      
+        <li class="active">
+          <a href="../../">home</a>
+        </li>
+      
+        <li class="active">
+          <a href="../../blog/">blog</a>
+        </li>
+      
+        <li>
+          <a href="../../resume/">resume</a>
+        </li>
+      
+        <li>
+          <a href="../../projects/">projects</a>
+        </li>
+      
+      </ul>
+    </nav>
+  </footer>
+</body>
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/ko_KR/sdk.js#xfbml=1&version=v2.8";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+</html>

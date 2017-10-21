@@ -170,7 +170,7 @@ ul.tags-list li:not(:last-child):after {
 
 .post .content {
     font-family: sans-serif;
-    font-size: 12pt;
+    font-size: 14pt;
     font-weight: 200;
     line-height: 1.8em;
     margin: 64px auto;
@@ -205,15 +205,19 @@ ul.tags-list li:not(:last-child):after {
   list-style-type: square;
 }
 
+/*
 .post .content p + .highlight,
 .post .content p + pre {
   margin-top: -24px;
 }
+*/
 
 .post .content pre,
 .post .content code {
     background-color: #f8f8f8;
     font-family: 'Menlo', 'Monaco', 'Consolas', 'monospace';
+    font-size: 12pt;
+    line-height: 1.6em;
 }
 
 .post .content pre {
@@ -233,7 +237,7 @@ ul.tags-list li:not(:last-child):after {
 
 .post .content p {
     color: #233;
-    margin: 16px 0 32px 0;
+    /* margin: 32px 0; */
 }
 
 .post .content ul,
