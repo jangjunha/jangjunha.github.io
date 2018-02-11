@@ -61,7 +61,7 @@
 </ul>
 <h1 id="">배포하기</h1><h2 id="flask">Flask 설정 확인하기</h2><p>앱을 배포하기 전에 설정을 다시 한번 점검해야합니다. SECRET_KEY가 GitHub와 같은 public repository에 올라가 공개되거나 너무 간단해 공격자가 유추해낸다면 공격자가 세션을 읽거나 조작할 수 있습니다. 다른 예로 Flask의 debug 모드가 켜져있으면 소스 코드가 노출되거나 (지금은 PIN code를 입력 절차가 추가됐지만) python shell에 접근할 수 있습니다.</p>
 <p><code>app.config['KEY'] = 'value'</code>와 같이 설정했던 config를 별도의 파일로 분리해서 관리해보겠습니다. 여러 환경에 따라 각각 다른 설정이 필요하다면 앱 기본 설정 값과 배포 환경(로컬 개발 환경, 테스트 환경, Release)별로 설을 나누는 방법으로 관리할 수 있습니다.
-SECRET_KEY는 python shell에서 <code>os.urandom(24)</code>을 입력해 출력되는 값을 복사해 붙여넣어봅시다.<sup class="footnote-ref" id="fnref-1"><a href="#fn-1" rel="footnote">1</a></sup> 데이터베이스 파일은 <code>/tmp</code> 디렉토리에 생성하겠습니다.</p>
+SECRET_KEY는 python shell에서 <code>os.urandom(24)</code>을 입력해 출력되는 값을 복사해 붙여넣어봅시다.<sup class="footnote-ref" id="fnref-1"><a href="#fn-1">1</a></sup> 데이터베이스 파일은 <code>/tmp</code> 디렉토리에 생성하겠습니다.</p>
 <p><strong>satcounter_config.py</strong></p>
 <pre><code>SECRET_KEY = '쉽게 유추할 수 없는 키. 유출되면 안됩니다.'
 SQLALCHEMY_DATABASE_URI = 'sqlite:////tmp/test.db'
@@ -115,7 +115,7 @@ satcounter_config.py
 <td>HTTP 서버. Apache(httpd)와 같은 다른 HTTP 서버를 사용해도 무방하나 이 문서에서는 nginx를 사용해 설정하는 법을 설명</td>
 </tr>
 <tr>
-<td>uwsgi<sup class="footnote-ref" id="fnref-2"><a href="#fn-2" rel="footnote">2</a></sup></td>
+<td>uwsgi<sup class="footnote-ref" id="fnref-2"><a href="#fn-2">2</a></sup></td>
 <td>만든 Flask 애플리케이션을 구동할 애플리케이션 서버. 개발 단계에서는 Flask에 내장된 build-in 서버를 사용했지만 배포 할 때는 uwsgi와 같은 애플리케이션 서버를 사용</td>
 </tr>
 <tr>
@@ -250,10 +250,10 @@ sudo service uwsgi status
 <li>502 Bad Gateway: uwsgi 설정이 잘못됐을 가능성이 높습니다. <code>/var/log/uwsgi/app/&lt;your-app&gt;.log</code> 파일을 확인해보세요. nginx 설정이 잘못됐을 가능성도 적지 않습니다. nginx 로그는 <code>/var/log/nginx</code> 디렉토리에 있습니다.</li>
 <li>500 Internal Server Error: 여러분의 소스코드에 버그가 있을 가능성이 높습니다. 로컬에서는 문제가 없고 서버에서만 문제가 발생한다면 DB접근 권한이 없을 가능성도 있습니다.</li>
 </ul>
-<h2 id="virtualbox">VirtualBox에서 네트워크 설정하기</h2><h3 id="host-only">Host-only 어댑터 새로 만들기</h3><p><strong>VirtualBox 설정 > Network 탭 > Host-only Networks 탭</strong>에서 +버튼을 눌러 새 Host-only 어댑터를 만듭니다. 이미 존재한다면 그걸 써도 좋습니다. 이 때 설정된 IPv4 Address와 서브넷마스크를 기억해둡시다.</p>
+<h2 id="virtualbox">VirtualBox에서 네트워크 설정하기</h2><h3 id="host-only">Host-only 어댑터 새로 만들기</h3><p><strong>VirtualBox 설정 &gt; Network 탭 &gt; Host-only Networks 탭</strong>에서 +버튼을 눌러 새 Host-only 어댑터를 만듭니다. 이미 존재한다면 그걸 써도 좋습니다. 이 때 설정된 IPv4 Address와 서브넷마스크를 기억해둡시다.</p>
 <h3 id="host-only">가상머신에 Host-only 어댑터 추가하기</h3><ol>
 <li>가상머신을 종료합니다.</li>
-<li><strong>가상머신 설정 > Network > Adapter 2 (빈 Adapter)</strong>에서 <strong>Enable Network Adapter</strong>를 체크합니다.</li>
+<li><strong>가상머신 설정 &gt; Network &gt; Adapter 2 (빈 Adapter)</strong>에서 <strong>Enable Network Adapter</strong>를 체크합니다.</li>
 <li><strong>Attached to</strong>를 <strong>Host-only Adapter</strong>로 설정합니다.</li>
 <li><strong>Name</strong>을 위에서 만든 어댑터로 설정합니다.</li>
 <li>가상머신을 부팅합니다.</li>
@@ -279,8 +279,8 @@ iface eth1 inet static
 <p>잘못된 부분이나 개선 사항은 <a href="mailto:jangjunha113@gmail.com">jangjunha113@gmail.com</a>으로 연락주시면 감사하겠습니다 :)</p>
 <div class="footnotes">
 <hr>
-<ol><li id="fn-1"><p>Flask 공식 문서: How to generate good secret keys - <a href="http://flask.pocoo.org/docs/0.12/quickstart/">http://flask.pocoo.org/docs/0.12/quickstart/</a><a href="#fnref-1" rev="footnote">&#8617;</a></p></li>
-<li id="fn-2"><p>Flask 공식 문서: uWSGI에 배포하기 - <a href="http://flask.pocoo.org/docs/0.12/deploying/uwsgi/">http://flask.pocoo.org/docs/0.12/deploying/uwsgi/</a><a href="#fnref-2" rev="footnote">&#8617;</a></p></li>
+<ol><li id="fn-1"><p>Flask 공식 문서: How to generate good secret keys - <a href="http://flask.pocoo.org/docs/0.12/quickstart/">http://flask.pocoo.org/docs/0.12/quickstart/</a><a href="#fnref-1" class="footnote">&#8617;</a></p></li>
+<li id="fn-2"><p>Flask 공식 문서: uWSGI에 배포하기 - <a href="http://flask.pocoo.org/docs/0.12/deploying/uwsgi/">http://flask.pocoo.org/docs/0.12/deploying/uwsgi/</a><a href="#fnref-2" class="footnote">&#8617;</a></p></li>
 </ol>
 </div>
 
