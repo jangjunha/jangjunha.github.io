@@ -1,0 +1,258 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../../static/blog-style.css">
+  <link rel="stylesheet" href="../../static/pygments.css">
+  <title>MySQL / MariaDB 공간 검색</title>
+  
+<meta property="fb:app_id" content="1923287127899740" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="MySQL / MariaDB 공간 검색" />
+<meta property="og:url" content="https://jangjunha.github.io/https://jangjunha.github.io/blog/mysql-mariadb-spatial-index/" />
+<meta property="og:image" content="https://jangjunha.github.io/blog/mysql-mariadb-spatial-index/img_0381-70baf40c-dccc-450e-858d-0b97b8177d5b.jpg" />
+
+  <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-101878699-1', 'auto');
+  ga('send', 'pageview');
+
+  </script>
+</head>
+<body>
+  <div class="container-wrapper">
+    <div class="container">
+      
+<div class="post">
+  <div class="blog-post">
+    
+<!-- <div class="blog-post"> -->
+    <h2 class="title">MySQL / MariaDB 공간 검색</h2>
+    <div class="meta">
+      <div class="meta-item"><span class="h">posted on</span> 2019년 10월 29일</div>
+      <div class="meta-item"><span class="h">tags</span>
+        <div class="tags-list-wrapper">
+        <ul class="tags-list">
+        <li>
+          <a href="../../blog/tags/mysql/" class="tag">mysql
+          </a>
+        </li>
+        <li>
+          <a href="../../blog/tags/mariadb/" class="tag">mariadb
+          </a>
+        </li>
+        <li>
+          <a href="../../blog/tags/database/" class="tag">database
+          </a>
+        </li>
+        <li>
+          <a href="../../blog/tags/index/" class="tag">index
+          </a>
+        </li>
+        <li>
+          <a href="../../blog/tags/rtree/" class="tag">rtree
+          </a>
+        </li>
+        <li>
+          <a href="../../blog/tags/mbr/" class="tag">mbr
+          </a>
+        </li>
+        </ul>
+        </div>
+      </div>
+    </div>
+    
+    <div class="content">
+        <h1 id="mysql-/-mariadb">MySQL / MariaDB 공간 검색</h1><p><a href="https://www.notion.so/MySQL-MariaDB-11eff6f9bbc34d4580c5abef84dc6276">https://www.notion.so/MySQL-MariaDB-11eff6f9bbc34d4580c5abef84dc6276</a>에 작성했던 글을 블로그에 다시 옮겨왔습니다.</p>
+<p>📝 <a href="https://github.com/Leop0ld/real-mysql-study">Real MySQL 스터디</a>를 진행하면서 정리한 노트입니다.</p>
+<p>⌨️ 예제들은 MySQL 8.0을 기준으로 작성하였습니다.</p>
+<h2 id="">공간 검색</h2><p><strong>R-Tree 인덱스</strong>를 사용. <strong>Spatial Index</strong> 라고도 함.</p>
+<h3 id="b-tree">그 전에 B-Tree 살펴보기</h3><ul>
+<li><a href="https://ko.wikipedia.org/wiki/B_%ED%8A%B8%EB%A6%AC">https://ko.wikipedia.org/wiki/B_트리</a></li>
+<li><a href="https://hyungjoon6876.github.io/jlog/2018/07/20/btree.html">https://hyungjoon6876.github.io/jlog/2018/07/20/btree.html</a></li>
+</ul>
+<h3 id="r-tree">R-Tree 요약</h3><p><strong>MBR</strong>(Minimum Bounding Rectangle): 요소들을 포함하는 최소 크기의 사각형</p>
+<p>도형들을 여러 MBR들로 그룹핑하고, 또 다시 그 MBR들을 더 큰 단위의 MBR로 묶는 식으로 트리를 구성</p>
+<p><a href="https://12bme.tistory.com/143">https://12bme.tistory.com/143</a></p>
+<h3 id="r-tree">R-Tree 인덱스를 사용해야 하는 이유</h3><ul>
+<li>좌표 데이터를 X좌표, Y좌표 2개 컬럼으로 만들어서 B-Tree composite 인덱스를 걸면 Left-most 특성땜에 특정 영역 범위 검색 시 한 쪽밖에 인덱스를 못 탐.<ul>
+<li>→ 데이터의 분포에 따라서 거의 풀스캔 하다시피 하는 경우가 생길 수 있음</li>
+</ul>
+</li>
+<li>성능<ul>
+<li>위치 정보 검색 시 R-Tree 인덱스가 B-Tree와 비교해서 전반적으로 검색이 빠름.</li>
+<li>단, 검색하는 영역이 너무 넓으면 느림</li>
+</ul>
+</li>
+</ul>
+<h2 id="r-tree">R-Tree를 이용한 위치 검색</h2><h3 id="">인덱스 생성</h3><ul>
+<li><code>POINT</code> / <code>GEOMETRY</code> 타입 등 사용하여 위치 정보 저장</li>
+<li>MySQL 5.7, MariaDB 10.2.2 미만에서는 R-Tree 인덱스를 사용하려면 MyISAM 스토리지 엔진으로 테이블 생성<ul>
+<li><a href="https://dev.mysql.com/doc/refman/5.7/en/mysql-nutshell.html#mysql-nutshell-additions">MySQL 5.7</a>, <a href="https://mariadb.com/kb/en/library/spatial-index/">MariaDB 10.2.2</a> 부터는 InnoDB / Aria 스토리지 엔진에서도 쓸 수 있음</li>
+</ul>
+</li>
+<li><p>인덱스 생성 시 <code>SPATIAL KEY</code> 키워드 사용</p>
+<div class="highlight"><pre><span></span><span class="c1">-- MySQL 8.0</span>
+
+<span class="o">&gt;</span> <span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">zloc</span> <span class="p">(</span>
+    <span class="n">id</span> <span class="nb">INT</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+    <span class="n">loc</span> <span class="n">POINT</span> <span class="k">NOT</span> <span class="k">NULL</span> <span class="n">SRID</span> <span class="mi">0</span><span class="p">,</span>  <span class="c1">-- MySQL 8.0 부터는 SRID를 명시하지 않으면 인덱스를 안 탐</span>
+    <span class="k">PRIMARY</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">id</span><span class="p">),</span>
+    <span class="n">SPATIAL</span> <span class="k">KEY</span> <span class="n">sx_loc</span> <span class="p">(</span><span class="n">loc</span><span class="p">)</span>
+  <span class="p">)</span> <span class="k">DEFAULT</span> <span class="n">CHARSET</span><span class="o">=</span><span class="n">utf8</span><span class="p">;</span>
+
+<span class="o">&gt;</span> <span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">zloc</span> <span class="p">(</span><span class="n">id</span><span class="p">,</span> <span class="n">loc</span><span class="p">)</span> <span class="k">VALUES</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">point</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">));</span>
+<span class="o">&gt;</span> <span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">zloc</span> <span class="p">(</span><span class="n">id</span><span class="p">,</span> <span class="n">loc</span><span class="p">)</span> <span class="k">VALUES</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">point</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">));</span>
+<span class="o">&gt;</span> <span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">zloc</span> <span class="p">(</span><span class="n">id</span><span class="p">,</span> <span class="n">loc</span><span class="p">)</span> <span class="k">VALUES</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">point</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">));</span>
+</pre></div>
+</li>
+</ul>
+<h3 id="">조회</h3><p>MySQL 클라이언트가 <code>POINT</code> 타입을 알아서 표현해주지 않음</p>
+<ul>
+<li><a href="https://dev.mysql.com/doc/refman/8.0/en/gis-point-property-functions.html#function_st-x"><code>ST_X()</code></a>, <a href="https://dev.mysql.com/doc/refman/8.0/en/gis-point-property-functions.html#function_st-y"><code>ST_Y()</code></a> 함수로 점의 X, Y좌표를 가져올 수 있음 (MySQL 5.6 미만에서는 <code>X()</code>, <code>Y()</code>)</li>
+<li><p><a href="https://dev.mysql.com/doc/refman/8.0/en/gis-format-conversion-functions.html#function_st-astext"><code>ST_AsText()</code></a>로 문자열로 나타낼 수 있음 (MySQL 5.6 미만에서는 <code>AsText()</code>)</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="k">SELECT</span> <span class="n">id</span><span class="p">,</span> <span class="n">ST_X</span><span class="p">(</span><span class="n">loc</span><span class="p">),</span> <span class="n">ST_Y</span><span class="p">(</span><span class="n">loc</span><span class="p">),</span> <span class="n">ST_AsText</span><span class="p">(</span><span class="n">loc</span><span class="p">)</span> <span class="k">FROM</span> <span class="n">zloc</span><span class="p">;</span>
+<span class="o">+</span><span class="c1">----+-----------+-----------+----------------+</span>
+<span class="o">|</span> <span class="n">id</span> <span class="o">|</span> <span class="n">ST_X</span><span class="p">(</span><span class="n">loc</span><span class="p">)</span> <span class="o">|</span> <span class="n">ST_Y</span><span class="p">(</span><span class="n">loc</span><span class="p">)</span> <span class="o">|</span> <span class="n">ST_AsText</span><span class="p">(</span><span class="n">loc</span><span class="p">)</span> <span class="o">|</span>
+<span class="o">+</span><span class="c1">----+-----------+-----------+----------------+</span>
+<span class="o">|</span>  <span class="mi">1</span> <span class="o">|</span>         <span class="mi">2</span> <span class="o">|</span>         <span class="mi">3</span> <span class="o">|</span> <span class="n">POINT</span><span class="p">(</span><span class="mi">2</span> <span class="mi">3</span><span class="p">)</span>     <span class="o">|</span>
+<span class="o">|</span>  <span class="mi">2</span> <span class="o">|</span>         <span class="mi">4</span> <span class="o">|</span>         <span class="mi">1</span> <span class="o">|</span> <span class="n">POINT</span><span class="p">(</span><span class="mi">4</span> <span class="mi">1</span><span class="p">)</span>     <span class="o">|</span>
+<span class="o">|</span>  <span class="mi">3</span> <span class="o">|</span>         <span class="mi">3</span> <span class="o">|</span>         <span class="mi">2</span> <span class="o">|</span> <span class="n">POINT</span><span class="p">(</span><span class="mi">3</span> <span class="mi">2</span><span class="p">)</span>     <span class="o">|</span>
+<span class="o">+</span><span class="c1">----+-----------+-----------+----------------+</span>
+<span class="mi">3</span> <span class="k">rows</span> <span class="k">in</span> <span class="k">set</span> <span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">01</span> <span class="n">sec</span><span class="p">)</span>
+</pre></div>
+</li>
+</ul>
+<h3 id="">쿼리</h3><ul>
+<li><a href="https://dev.mysql.com/doc/refman/8.0/en/spatial-relation-functions-mbr.html#function_mbrcontains"><code>MBRContains()</code></a> 함수 사용<ul>
+<li><a href="https://dev.mysql.com/doc/refman/5.7/en/spatial-relation-functions-mbr.html#function_contains">"MBRContains() and Contains() are synonyms." (Contains is deprecated in 5.7.6)</a></li>
+<li>두 번째 인자로 주어진 공간 정보의 <strong>MBR</strong>이 첫 번째 인자로 주어진 공간 정보의 <strong>MBR</strong>에 포함되는가</li>
+<li>^ 이것만이 R-Tree 인덱스를 올바르게 사용할 수 있는 유일한 방법! (인 줄 알았으나...)</li>
+</ul>
+</li>
+<li>MySQL 5.6에 <a href="https://dev.mysql.com/doc/refman/5.6/en/spatial-relation-functions-object-shapes.html"><code>ST_Contains()</code></a> 함수가 생김<ul>
+<li>두 번째 인자의 공간 정보가 첫 번째 인자의 공간 정보에 포함되는가 (MBR이 아님!)</li>
+<li>정확히 어떤 원리로 인덱스를 타는 건지는 찾지 못했음</li>
+</ul>
+</li>
+</ul>
+<p><img src="../../blog/mysql-mariadb-spatial-index/IMG_0381-70baf40c-dccc-450e-858d-0b97b8177d5b.jpg" alt="zloc 테이블의 점들과 쿼리에서 사용하는 도형을 나타낸 그림"></p>
+<figcaption style="margin-top: 16px">`zloc` 테이블의 점들과 쿼리에서 사용하는 도형을 나타낸 그림</figcaption><h3 id="st_contains">ST_Contains()</h3><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="k">SELECT</span> <span class="n">id</span><span class="p">,</span> <span class="n">ST_AsText</span><span class="p">(</span><span class="n">loc</span><span class="p">)</span>
+  <span class="k">FROM</span> <span class="n">zloc</span>
+  <span class="k">WHERE</span> <span class="n">ST_Contains</span><span class="p">(</span>
+    <span class="n">ST_GeomFromText</span><span class="p">(</span><span class="s1">&#39;POLYGON((1 1,</span>
+<span class="s1">                              4 1,</span>
+<span class="s1">                              4 4,</span>
+<span class="s1">                               1 1))&#39;</span><span class="p">),</span>
+    <span class="n">loc</span>
+  <span class="p">);</span>
+<span class="o">+</span><span class="c1">----+----------------+</span>
+<span class="o">|</span> <span class="n">id</span> <span class="o">|</span> <span class="n">ST_AsText</span><span class="p">(</span><span class="n">loc</span><span class="p">)</span> <span class="o">|</span>
+<span class="o">+</span><span class="c1">----+----------------+</span>
+<span class="o">|</span>  <span class="mi">3</span> <span class="o">|</span> <span class="n">POINT</span><span class="p">(</span><span class="mi">3</span> <span class="mi">2</span><span class="p">)</span>     <span class="o">|</span>
+<span class="o">+</span><span class="c1">----+----------------+</span>
+<span class="mi">1</span> <span class="k">row</span> <span class="k">in</span> <span class="k">set</span> <span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">00</span> <span class="n">sec</span><span class="p">)</span>
+
+<span class="c1">-- explain</span>
+<span class="o">+</span><span class="c1">----+-------------+-------+------------+-------+---------------+--------+---------+------+------+----------+-------------+</span>
+<span class="o">|</span> <span class="n">id</span> <span class="o">|</span> <span class="n">select_type</span> <span class="o">|</span> <span class="k">table</span> <span class="o">|</span> <span class="n">partitions</span> <span class="o">|</span> <span class="k">type</span>  <span class="o">|</span> <span class="n">possible_keys</span> <span class="o">|</span> <span class="k">key</span>    <span class="o">|</span> <span class="n">key_len</span> <span class="o">|</span> <span class="k">ref</span>  <span class="o">|</span> <span class="k">rows</span> <span class="o">|</span> <span class="n">filtered</span> <span class="o">|</span> <span class="n">Extra</span>       <span class="o">|</span>
+<span class="o">+</span><span class="c1">----+-------------+-------+------------+-------+---------------+--------+---------+------+------+----------+-------------+</span>
+<span class="o">|</span>  <span class="mi">1</span> <span class="o">|</span> <span class="k">SIMPLE</span>      <span class="o">|</span> <span class="n">zloc</span>  <span class="o">|</span> <span class="k">NULL</span>       <span class="o">|</span> <span class="n">range</span> <span class="o">|</span> <span class="n">sx_loc</span>        <span class="o">|</span> <span class="n">sx_loc</span> <span class="o">|</span> <span class="mi">34</span>      <span class="o">|</span> <span class="k">NULL</span> <span class="o">|</span>    <span class="mi">3</span> <span class="o">|</span>   <span class="mi">100</span><span class="p">.</span><span class="mi">00</span> <span class="o">|</span> <span class="k">Using</span> <span class="k">where</span> <span class="o">|</span>
+<span class="o">+</span><span class="c1">----+-------------+-------+------------+-------+---------------+--------+---------+------+------+----------+-------------+</span>
+<span class="mi">1</span> <span class="k">row</span> <span class="k">in</span> <span class="k">set</span><span class="p">,</span> <span class="mi">1</span> <span class="n">warning</span> <span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">00</span> <span class="n">sec</span><span class="p">)</span>
+</pre></div>
+<h3 id="mbrcontains">MBRContains()</h3><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="k">SELECT</span> <span class="n">id</span><span class="p">,</span> <span class="n">ST_AsText</span><span class="p">(</span><span class="n">loc</span><span class="p">)</span>
+  <span class="k">FROM</span> <span class="n">zloc</span>
+  <span class="k">WHERE</span> <span class="n">MBRContains</span><span class="p">(</span>
+    <span class="n">ST_GeomFromText</span><span class="p">(</span><span class="s1">&#39;POLYGON((1 1,</span>
+<span class="s1">                              4 1,</span>
+<span class="s1">                              4 4,</span>
+<span class="s1">                              1 1))&#39;</span><span class="p">),</span>
+    <span class="n">loc</span>
+  <span class="p">);</span>
+<span class="o">+</span><span class="c1">----+----------------+</span>
+<span class="o">|</span> <span class="n">id</span> <span class="o">|</span> <span class="n">ST_AsText</span><span class="p">(</span><span class="n">loc</span><span class="p">)</span> <span class="o">|</span>
+<span class="o">+</span><span class="c1">----+----------------+</span>
+<span class="o">|</span>  <span class="mi">1</span> <span class="o">|</span> <span class="n">POINT</span><span class="p">(</span><span class="mi">2</span> <span class="mi">3</span><span class="p">)</span>     <span class="o">|</span>
+<span class="o">|</span>  <span class="mi">3</span> <span class="o">|</span> <span class="n">POINT</span><span class="p">(</span><span class="mi">3</span> <span class="mi">2</span><span class="p">)</span>     <span class="o">|</span>
+<span class="o">+</span><span class="c1">----+----------------+</span>
+<span class="mi">2</span> <span class="k">rows</span> <span class="k">in</span> <span class="k">set</span> <span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">00</span> <span class="n">sec</span><span class="p">)</span>
+
+<span class="c1">-- explain</span>
+<span class="o">+</span><span class="c1">----+-------------+-------+------------+-------+---------------+--------+---------+------+------+----------+-------------+</span>
+<span class="o">|</span> <span class="n">id</span> <span class="o">|</span> <span class="n">select_type</span> <span class="o">|</span> <span class="k">table</span> <span class="o">|</span> <span class="n">partitions</span> <span class="o">|</span> <span class="k">type</span>  <span class="o">|</span> <span class="n">possible_keys</span> <span class="o">|</span> <span class="k">key</span>    <span class="o">|</span> <span class="n">key_len</span> <span class="o">|</span> <span class="k">ref</span>  <span class="o">|</span> <span class="k">rows</span> <span class="o">|</span> <span class="n">filtered</span> <span class="o">|</span> <span class="n">Extra</span>       <span class="o">|</span>
+<span class="o">+</span><span class="c1">----+-------------+-------+------------+-------+---------------+--------+---------+------+------+----------+-------------+</span>
+<span class="o">|</span>  <span class="mi">1</span> <span class="o">|</span> <span class="k">SIMPLE</span>      <span class="o">|</span> <span class="n">zloc</span>  <span class="o">|</span> <span class="k">NULL</span>       <span class="o">|</span> <span class="n">range</span> <span class="o">|</span> <span class="n">sx_loc</span>        <span class="o">|</span> <span class="n">sx_loc</span> <span class="o">|</span> <span class="mi">34</span>      <span class="o">|</span> <span class="k">NULL</span> <span class="o">|</span>    <span class="mi">3</span> <span class="o">|</span>   <span class="mi">100</span><span class="p">.</span><span class="mi">00</span> <span class="o">|</span> <span class="k">Using</span> <span class="k">where</span> <span class="o">|</span>
+<span class="o">+</span><span class="c1">----+-------------+-------+------------+-------+---------------+--------+---------+------+------+----------+-------------+</span>
+<span class="mi">1</span> <span class="k">row</span> <span class="k">in</span> <span class="k">set</span><span class="p">,</span> <span class="mi">1</span> <span class="n">warning</span> <span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">00</span> <span class="n">sec</span><span class="p">)</span>
+</pre></div>
+<h3 id="srid-spatial-reference-system-identifier">SRID (Spatial Reference System Identifier)</h3><ul>
+<li><strong>평면 좌표(Cartesian)</strong> 👉 SRID <code>0</code></li>
+<li><p><strong>둥근 지구 (위경도) 좌표(geographic)</strong> 👉 SRID <code>4326</code></p>
+</li>
+<li><p><a href="https://dev.mysql.com/doc/refman/8.0/en/spatial-type-overview.html">https://dev.mysql.com/doc/refman/8.0/en/spatial-type-overview.html</a></p>
+</li>
+<li><a href="https://dev.mysql.com/doc/refman/8.0/en/spatial-index-optimization.html">https://dev.mysql.com/doc/refman/8.0/en/spatial-index-optimization.html</a></li>
+<li><a href="https://postgis.net/workshops/postgis-intro/projection.html">https://postgis.net/workshops/postgis-intro/projection.html</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Spatial_reference_system">https://en.wikipedia.org/wiki/Spatial_reference_system</a></li>
+</ul>
+
+    </div>
+    
+
+
+  </div>
+
+    
+    <div class="social-buttons">
+      <div class="fb-share-button" data-href="https://jangjunha.github.io/../../blog/mysql-mariadb-spatial-index/" data-layout="button" data-size="small" data-mobile-iframe="true"></div>
+    </div>
+    <div class="fb-comments" data-href="https://jangjunha.github.io/../../blog/mysql-mariadb-spatial-index/" data-numposts="5" data-width="100%"></div>
+</div>
+
+    </div>
+  </div>
+
+  <footer>
+    <p class="copyright">&copy; <span style="font-weight: 600">jangjunha</span></p>
+    <nav>
+      <ul>
+      
+        <li class="active">
+          <a href="../../">home</a>
+        </li>
+      
+        <li class="active">
+          <a href="../../blog/">blog</a>
+        </li>
+      
+        <li>
+          <a href="../../resume/">resume</a>
+        </li>
+      
+        <li>
+          <a href="../../projects/">projects</a>
+        </li>
+      
+      </ul>
+    </nav>
+  </footer>
+</body>
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/ko_KR/sdk.js#xfbml=1&version=v2.8";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+</html>
