@@ -18,7 +18,7 @@ body {
 }
 
 .page-title {
-    font-weight: 200;
+    font-weight: normal;
     color: #8aa;
     /*margin-left: -1.4em;*/
 }
@@ -159,7 +159,7 @@ ul.tags-list li:not(:last-child):after {
 
 .post .meta .meta-item span.h,
 .post-list .meta .meta-item span.h {
-  font-weight: 100;
+  font-weight: normal;
   margin-right: 8px;
 }
 
@@ -171,14 +171,14 @@ ul.tags-list li:not(:last-child):after {
 .post .content {
     font-family: sans-serif;
     font-size: 14pt;
-    font-weight: 200;
+//    font-weight: 200;
     line-height: 1.8em;
     margin: 64px auto;
 }
 
 .post .content a {
-    color: #8aa;
-    border-bottom: 1px dashed #8aa;
+    color: #507a7a;
+    border-bottom: 1px dashed #507a7a;
     text-decoration: none;
 }
 
