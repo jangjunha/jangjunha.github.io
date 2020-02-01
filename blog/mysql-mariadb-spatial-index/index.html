@@ -141,7 +141,7 @@
 </ul>
 </li>
 </ul>
-<p><img src="../../blog/mysql-mariadb-spatial-index/IMG_0381-70baf40c-dccc-450e-858d-0b97b8177d5b.jpg" alt="zloc 테이블의 점들과 쿼리에서 사용하는 도형을 나타낸 그림"></p>
+<p><img src="../../blog/mysql-mariadb-spatial-index/img_0381-70baf40c-dccc-450e-858d-0b97b8177d5b.jpg" alt="zloc 테이블의 점들과 쿼리에서 사용하는 도형을 나타낸 그림"></p>
 <figcaption style="margin-top: 16px">`zloc` 테이블의 점들과 쿼리에서 사용하는 도형을 나타낸 그림</figcaption><h3 id="st_contains">ST_Contains()</h3><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="k">SELECT</span> <span class="n">id</span><span class="p">,</span> <span class="n">ST_AsText</span><span class="p">(</span><span class="n">loc</span><span class="p">)</span>
   <span class="k">FROM</span> <span class="n">zloc</span>
   <span class="k">WHERE</span> <span class="n">ST_Contains</span><span class="p">(</span>
