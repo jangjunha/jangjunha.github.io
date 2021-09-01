@@ -39,27 +39,27 @@
         <div class="tags-list-wrapper">
         <ul class="tags-list">
         <li>
-          <a href="../../blog/tags/mysql/" class="tag">mysql
+          <a href="../tags/mysql/" class="tag">mysql
           </a>
         </li>
         <li>
-          <a href="../../blog/tags/mariadb/" class="tag">mariadb
+          <a href="../tags/mariadb/" class="tag">mariadb
           </a>
         </li>
         <li>
-          <a href="../../blog/tags/database/" class="tag">database
+          <a href="../tags/database/" class="tag">database
           </a>
         </li>
         <li>
-          <a href="../../blog/tags/index/" class="tag">index
+          <a href="../tags/index/" class="tag">index
           </a>
         </li>
         <li>
-          <a href="../../blog/tags/rtree/" class="tag">rtree
+          <a href="../tags/rtree/" class="tag">rtree
           </a>
         </li>
         <li>
-          <a href="../../blog/tags/mbr/" class="tag">mbr
+          <a href="../tags/mbr/" class="tag">mbr
           </a>
         </li>
         </ul>
@@ -68,18 +68,18 @@
     </div>
     
     <div class="content">
-        <h1 id="mysql-/-mariadb">MySQL / MariaDB 공간 검색</h1><p><a href="https://www.notion.so/MySQL-MariaDB-11eff6f9bbc34d4580c5abef84dc6276">https://www.notion.so/MySQL-MariaDB-11eff6f9bbc34d4580c5abef84dc6276</a>에 작성했던 글을 블로그에 다시 옮겨왔습니다.</p>
+        <h1 id="mysql/mariadb-gonggan-geomsaeg">MySQL / MariaDB 공간 검색</h1><p><a href="https://www.notion.so/MySQL-MariaDB-11eff6f9bbc34d4580c5abef84dc6276">https://www.notion.so/MySQL-MariaDB-11eff6f9bbc34d4580c5abef84dc6276</a>에 작성했던 글을 블로그에 다시 옮겨왔습니다.</p>
 <p>📝 <a href="https://github.com/Leop0ld/real-mysql-study">Real MySQL 스터디</a>를 진행하면서 정리한 노트입니다.</p>
 <p>⌨️ 예제들은 MySQL 8.0을 기준으로 작성하였습니다.</p>
-<h2 id="">공간 검색</h2><p><strong>R-Tree 인덱스</strong>를 사용. <strong>Spatial Index</strong> 라고도 함.</p>
-<h3 id="b-tree">그 전에 B-Tree 살펴보기</h3><ul>
+<h2 id="gonggan-geomsaeg">공간 검색</h2><p><strong>R-Tree 인덱스</strong>를 사용. <strong>Spatial Index</strong> 라고도 함.</p>
+<h3 id="geu-jeone-b-tree-salpyeobogi">그 전에 B-Tree 살펴보기</h3><ul>
 <li><a href="https://ko.wikipedia.org/wiki/B_%ED%8A%B8%EB%A6%AC">https://ko.wikipedia.org/wiki/B_트리</a></li>
 <li><a href="https://hyungjoon6876.github.io/jlog/2018/07/20/btree.html">https://hyungjoon6876.github.io/jlog/2018/07/20/btree.html</a></li>
 </ul>
-<h3 id="r-tree">R-Tree 요약</h3><p><strong>MBR</strong>(Minimum Bounding Rectangle): 요소들을 포함하는 최소 크기의 사각형</p>
+<h3 id="r-tree-yoyag">R-Tree 요약</h3><p><strong>MBR</strong>(Minimum Bounding Rectangle): 요소들을 포함하는 최소 크기의 사각형</p>
 <p>도형들을 여러 MBR들로 그룹핑하고, 또 다시 그 MBR들을 더 큰 단위의 MBR로 묶는 식으로 트리를 구성</p>
 <p><a href="https://12bme.tistory.com/143">https://12bme.tistory.com/143</a></p>
-<h3 id="r-tree">R-Tree 인덱스를 사용해야 하는 이유</h3><ul>
+<h3 id="r-tree-indegseureul-sayonghaeya-haneun-iyu">R-Tree 인덱스를 사용해야 하는 이유</h3><ul>
 <li>좌표 데이터를 X좌표, Y좌표 2개 컬럼으로 만들어서 B-Tree composite 인덱스를 걸면 Left-most 특성땜에 특정 영역 범위 검색 시 한 쪽밖에 인덱스를 못 탐.<ul>
 <li>→ 데이터의 분포에 따라서 거의 풀스캔 하다시피 하는 경우가 생길 수 있음</li>
 </ul>
@@ -90,7 +90,7 @@
 </ul>
 </li>
 </ul>
-<h2 id="r-tree">R-Tree를 이용한 위치 검색</h2><h3 id="">인덱스 생성</h3><ul>
+<h2 id="r-treereul-iyonghan-wici-geomsaeg">R-Tree를 이용한 위치 검색</h2><h3 id="indegseu-saengseong">인덱스 생성</h3><ul>
 <li><code>POINT</code> / <code>GEOMETRY</code> 타입 등 사용하여 위치 정보 저장</li>
 <li>MySQL 5.7, MariaDB 10.2.2 미만에서는 R-Tree 인덱스를 사용하려면 MyISAM 스토리지 엔진으로 테이블 생성<ul>
 <li><a href="https://dev.mysql.com/doc/refman/5.7/en/mysql-nutshell.html#mysql-nutshell-additions">MySQL 5.7</a>, <a href="https://mariadb.com/kb/en/library/spatial-index/">MariaDB 10.2.2</a> 부터는 InnoDB / Aria 스토리지 엔진에서도 쓸 수 있음</li>
@@ -112,7 +112,7 @@
 </pre></div>
 </li>
 </ul>
-<h3 id="">조회</h3><p>MySQL 클라이언트가 <code>POINT</code> 타입을 알아서 표현해주지 않음</p>
+<h3 id="johoe">조회</h3><p>MySQL 클라이언트가 <code>POINT</code> 타입을 알아서 표현해주지 않음</p>
 <ul>
 <li><a href="https://dev.mysql.com/doc/refman/8.0/en/gis-point-property-functions.html#function_st-x"><code>ST_X()</code></a>, <a href="https://dev.mysql.com/doc/refman/8.0/en/gis-point-property-functions.html#function_st-y"><code>ST_Y()</code></a> 함수로 점의 X, Y좌표를 가져올 수 있음 (MySQL 5.6 미만에서는 <code>X()</code>, <code>Y()</code>)</li>
 <li><p><a href="https://dev.mysql.com/doc/refman/8.0/en/gis-format-conversion-functions.html#function_st-astext"><code>ST_AsText()</code></a>로 문자열로 나타낼 수 있음 (MySQL 5.6 미만에서는 <code>AsText()</code>)</p>
@@ -128,7 +128,7 @@
 </pre></div>
 </li>
 </ul>
-<h3 id="">쿼리</h3><ul>
+<h3 id="kweori">쿼리</h3><ul>
 <li><a href="https://dev.mysql.com/doc/refman/8.0/en/spatial-relation-functions-mbr.html#function_mbrcontains"><code>MBRContains()</code></a> 함수 사용<ul>
 <li><a href="https://dev.mysql.com/doc/refman/5.7/en/spatial-relation-functions-mbr.html#function_contains">"MBRContains() and Contains() are synonyms." (Contains is deprecated in 5.7.6)</a></li>
 <li>두 번째 인자로 주어진 공간 정보의 <strong>MBR</strong>이 첫 번째 인자로 주어진 공간 정보의 <strong>MBR</strong>에 포함되는가</li>
@@ -141,8 +141,8 @@
 </ul>
 </li>
 </ul>
-<p><img src="../../blog/mysql-mariadb-spatial-index/img_0381-70baf40c-dccc-450e-858d-0b97b8177d5b.jpg" alt="zloc 테이블의 점들과 쿼리에서 사용하는 도형을 나타낸 그림"></p>
-<figcaption style="margin-top: 16px">`zloc` 테이블의 점들과 쿼리에서 사용하는 도형을 나타낸 그림</figcaption><h3 id="st_contains">ST_Contains()</h3><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="k">SELECT</span> <span class="n">id</span><span class="p">,</span> <span class="n">ST_AsText</span><span class="p">(</span><span class="n">loc</span><span class="p">)</span>
+<p><img src="img_0381-70baf40c-dccc-450e-858d-0b97b8177d5b.jpg" alt="zloc 테이블의 점들과 쿼리에서 사용하는 도형을 나타낸 그림"></p>
+<figcaption style="margin-top: 16px">`zloc` 테이블의 점들과 쿼리에서 사용하는 도형을 나타낸 그림</figcaption><h3 id="st-contains">ST_Contains()</h3><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="k">SELECT</span> <span class="n">id</span><span class="p">,</span> <span class="n">ST_AsText</span><span class="p">(</span><span class="n">loc</span><span class="p">)</span>
   <span class="k">FROM</span> <span class="n">zloc</span>
   <span class="k">WHERE</span> <span class="n">ST_Contains</span><span class="p">(</span>
     <span class="n">ST_GeomFromText</span><span class="p">(</span><span class="s1">&#39;POLYGON((1 1,</span>
@@ -210,9 +210,9 @@
 
     
     <div class="social-buttons">
-      <div class="fb-share-button" data-href="https://jangjunha.github.io/../../blog/mysql-mariadb-spatial-index/" data-layout="button" data-size="small" data-mobile-iframe="true"></div>
+      <div class="fb-share-button" data-href="https://jangjunha.github.io/./" data-layout="button" data-size="small" data-mobile-iframe="true"></div>
     </div>
-    <div class="fb-comments" data-href="https://jangjunha.github.io/../../blog/mysql-mariadb-spatial-index/" data-numposts="5" data-width="100%"></div>
+    <div class="fb-comments" data-href="https://jangjunha.github.io/./" data-numposts="5" data-width="100%"></div>
 </div>
 
     </div>
@@ -228,7 +228,7 @@
         </li>
       
         <li class="active">
-          <a href="../../blog/">blog</a>
+          <a href="../">blog</a>
         </li>
       
         <li>
