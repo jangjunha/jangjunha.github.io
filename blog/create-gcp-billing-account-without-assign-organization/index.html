@@ -1,0 +1,130 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../../static/blog-style.css">
+  <link rel="stylesheet" href="../../static/pygments.css">
+  <title>Create GCP billing account without assign organization</title>
+  
+<meta property="fb:app_id" content="1923287127899740" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Create GCP billing account without assign organization" />
+<meta property="og:url" content="https://jangjunha.github.io/https://jangjunha.github.io/blog/create-gcp-billing-account-without-assign-organization/" />
+<meta property="og:image" content="https://jangjunha.github.io/blog/create-gcp-billing-account-without-assign-organization/console.png" />
+
+  <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-101878699-1', 'auto');
+  ga('send', 'pageview');
+
+  </script>
+</head>
+<body>
+  <div class="container-wrapper">
+    <div class="container">
+      
+<div class="post">
+  <div class="blog-post">
+    
+<!-- <div class="blog-post"> -->
+    <h2 class="title">Create GCP billing account without assign organization</h2>
+    <div class="meta">
+      <div class="meta-item"><span class="h">posted on</span> 2022년 7월 24일</div>
+      <div class="meta-item"><span class="h">tags</span>
+        <div class="tags-list-wrapper">
+        <ul class="tags-list">
+        <li>
+          <a href="../tags/gcp/" class="tag">gcp
+          </a>
+        </li>
+        </ul>
+        </div>
+      </div>
+    </div>
+    
+    <div class="content">
+        <h2 id="background">Background</h2><p>I have some organization-assigned projects created before.</p>
+<h2 id="problem">Problem</h2><p>I'm trying to create a new billing account without assign any organization but it's impossible by the GCP console.</p>
+<p><img src="console.png" alt="Cannot clear &#39;Organization&#39; field"></p>
+<p>The Organization field was disabled and I can't clear that field. My new project is not belongs to organization, so I have to create a billing account that is not linked to the organization.</p>
+<h2 id="solution">Solution</h2><p>Send a HTTP request manually.</p>
+<p>First, I found the request from dev tools. It can be easily found by filtering url by <code>BILLING_ACCOUNTS_GRAPHQL</code>. After found, Copy as cURL from the context menu of the request row.</p>
+<p><img src="copy-from-devtools.png" alt="Copy as cURL from Chrome dev tools"></p>
+<p>The copied request looks like this:</p>
+<div class="highlight"><pre><span></span>curl <span class="s1">&#39;https://cloudconsole-pa.clients6.google.com/v3/entityServices/BillingAccountsEntityService/schemas/BILLING_ACCOUNTS_GRAPHQL:graphql?key=&lt;HIDDEN&gt;&amp;prettyPrint=false&#39;</span> <span class="se">\</span>
+<span class="o">[</span>...COLLAPSED...<span class="o">]</span>
+  --data-raw <span class="s1">$&#39;{&quot;requestContext&quot;: [...COLLAPSED...] &quot;variables&quot;:{&quot;billingAccount&quot;:{&quot;displayName&quot;:&quot;My Billing Account&quot;,&quot;currencyCode&quot;:&quot;KRW&quot;,&quot;organizationName&quot;:&quot;organizations/&lt;ORG_ID&gt;&quot;},&quot;isFreeTrialAccount&quot;:false,&quot;hasVerifiedBusinessEmail&quot;:false}}&#39;</span> <span class="se">\</span>
+  --compressed
+</pre></div>
+<p>You can edit the <code>"organizationName": "organizations/&lt;ORG_ID&gt;"</code> part in the <code>--data-raw</code> parameter. Replace <code>"organizationName": "organizations/&lt;ORG_ID&gt;"</code> to <code>"organizationName": null</code>.</p>
+<div class="highlight"><pre><span></span>curl <span class="s1">&#39;https://cloudconsole-pa.clients6.google.com/v3/entityServices/BillingAccountsEntityService/schemas/BILLING_ACCOUNTS_GRAPHQL:graphql?key=&lt;HIDDEN&gt;&amp;prettyPrint=false&#39;</span> <span class="se">\</span>
+<span class="o">[</span>...COLLAPSED...<span class="o">]</span>
+  --data-raw <span class="s1">$&#39;{&quot;requestContext&quot;: [...COLLAPSED...] &quot;variables&quot;:{&quot;billingAccount&quot;:{&quot;displayName&quot;:&quot;My Billing Account&quot;,&quot;currencyCode&quot;:&quot;KRW&quot;,&quot;organizationName&quot;:null},&quot;isFreeTrialAccount&quot;:false,&quot;hasVerifiedBusinessEmail&quot;:false}}&#39;</span> <span class="se">\</span>
+  --compressed
+</pre></div>
+<p>After execute the command, a billing account will be created and you will be able to find the id in the response.</p>
+<div class="highlight"><pre><span></span><span class="p">[{</span><span class="nt">&quot;data&quot;</span><span class="p">:{</span><span class="nt">&quot;billingAccountsMutation&quot;</span><span class="p">:{</span><span class="nt">&quot;createBillingAccount&quot;</span><span class="p">:{</span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="s2">&quot;&lt;BILLING-ACCOUNT-ID&gt;&quot;</span><span class="p">,</span><span class="nt">&quot;displayName&quot;</span><span class="p">:</span><span class="s2">&quot;My Billing Account&quot;</span><span class="p">,</span><span class="nt">&quot;currencyCode&quot;</span><span class="p">:</span><span class="s2">&quot;KRW&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="err">...COLLAPSED...</span><span class="p">]</span><span class="w"></span>
+</pre></div>
+<p>In my case, I haven't been able to see the newly created account in the list yet. However, I was able to directly access the newly created account through the following address:</p>
+<p><a href="[https:/console.cloud.google.com/billing/%3CBILLING-ACCOUNT-ID%3E/]">https://console.cloud.google.com/billing/&lt;BILLING-ACCOUNT-ID&gt;/</a></p>
+<p>When you open the page, you can set up your billing account. After setup, I was able to use my billing account normally.</p>
+
+    </div>
+    
+
+
+  </div>
+
+    
+    <div class="social-buttons">
+      <div class="fb-share-button" data-href="https://jangjunha.github.io/./" data-layout="button" data-size="small" data-mobile-iframe="true"></div>
+    </div>
+    <div class="fb-comments" data-href="https://jangjunha.github.io/./" data-numposts="5" data-width="100%"></div>
+</div>
+
+    </div>
+  </div>
+
+  <footer>
+    <p class="copyright">&copy; <span style="font-weight: 600">jangjunha</span></p>
+    <nav>
+      <ul>
+      
+        <li class="active">
+          <a href="../../">home</a>
+        </li>
+      
+        <li class="active">
+          <a href="../">blog</a>
+        </li>
+      
+        <li>
+          <a href="../../resume/">resume</a>
+        </li>
+      
+        <li>
+          <a href="../../projects/">projects</a>
+        </li>
+      
+      </ul>
+    </nav>
+  </footer>
+</body>
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/ko_KR/sdk.js#xfbml=1&version=v2.8";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+</html>
