@@ -6,6 +6,7 @@
   <link rel="stylesheet" href="../../static/blog-style.css">
   <link rel="stylesheet" href="../../static/pygments.css">
   <title>[번역] Rx를 왜 사용해야하나요?</title>
+  <meta http-equiv="refresh" content="0;URL='https://jangjunha.me/blog/rxswift-why-use-rx/'" />
   
 <meta property="fb:app_id" content="1923287127899740" />
 <meta property="og:type" content="article" />
@@ -105,9 +106,9 @@
 <pre><code>`TickTock` was deallocated while key value observers were still registered with it. Observation info was leaked, and may even become mistakenly attached to some other object.
 </code></pre>
 <div class="highlight"><pre><span></span><span class="p">-(</span><span class="kt">void</span><span class="p">)</span><span class="nf">observeValueForKeyPath:</span><span class="p">(</span><span class="bp">NSString</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="nv">keyPath</span><span class="w"></span>
-<span class="w">                     </span><span class="nf">ofObject:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">object</span><span class="w"></span>
-<span class="w">                       </span><span class="nf">change:</span><span class="p">(</span><span class="bp">NSDictionary</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="nv">change</span><span class="w"></span>
-<span class="w">                      </span><span class="nf">context:</span><span class="p">(</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="nv">context</span><span class="w"></span>
+<span class="w">                     </span><span class="nl">ofObject</span><span class="p">:(</span><span class="kt">id</span><span class="p">)</span><span class="nv">object</span><span class="w"></span>
+<span class="w">                       </span><span class="nl">change</span><span class="p">:(</span><span class="bp">NSDictionary</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="nv">change</span><span class="w"></span>
+<span class="w">                      </span><span class="nl">context</span><span class="p">:(</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="nv">context</span><span class="w"></span>
 </pre></div>
 <p><a href="https://github.com/ReactiveX/RxSwift/blob/master/Documentation/GettingStarted.md#kvo"><code>rx.observe</code>와 <code>rx.observeWeakly</code></a>를 사용하세요.</p>
 <p>그러면 다음과 같이 사용할 수 있습니다:</p>
@@ -126,7 +127,7 @@
 </pre></div>
 <h2 id="notifications">Notifications</h2><p>아래 방법 대신</p>
 <div class="highlight"><pre><span></span><span class="p">@</span><span class="n">available</span><span class="p">(</span><span class="n">iOS</span><span class="w"> </span><span class="mf">4.0</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"></span>
-<span class="n">public</span><span class="w"> </span><span class="n">func</span><span class="w"> </span><span class="n">addObserverForName</span><span class="p">(</span><span class="nl">name</span><span class="p">:</span><span class="w"> </span><span class="n">String</span><span class="o">?</span><span class="p">,</span><span class="w"> </span><span class="n">object</span><span class="w"> </span><span class="nl">obj</span><span class="p">:</span><span class="w"> </span><span class="n">AnyObject</span><span class="o">?</span><span class="p">,</span><span class="w"> </span><span class="nl">queue</span><span class="p">:</span><span class="w"> </span><span class="bp">NSOperationQueue</span><span class="o">?</span><span class="p">,</span><span class="w"> </span><span class="n">usingBlock</span><span class="w"> </span><span class="nl">block</span><span class="p">:</span><span class="w"> </span><span class="p">(</span><span class="bp">NSNotification</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Void</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">NSObjectProtocol</span><span class="w"></span>
+<span class="n">public</span><span class="w"> </span><span class="n">func</span><span class="w"> </span><span class="n">addObserverForName</span><span class="p">(</span><span class="n">name</span><span class="o">:</span><span class="w"> </span><span class="n">String</span><span class="o">?</span><span class="p">,</span><span class="w"> </span><span class="n">object</span><span class="w"> </span><span class="n">obj</span><span class="o">:</span><span class="w"> </span><span class="n">AnyObject</span><span class="o">?</span><span class="p">,</span><span class="w"> </span><span class="n">queue</span><span class="o">:</span><span class="w"> </span><span class="bp">NSOperationQueue</span><span class="o">?</span><span class="p">,</span><span class="w"> </span><span class="n">usingBlock</span><span class="w"> </span><span class="n">block</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="bp">NSNotification</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Void</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">NSObjectProtocol</span><span class="w"></span>
 </pre></div>
 <p>이렇게 쓰세요.</p>
 <div class="highlight"><pre><span></span><span class="n">NotificationCenter</span><span class="p">.</span><span class="k">default</span>
